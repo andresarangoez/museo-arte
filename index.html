@@ -214,6 +214,15 @@ body.idle .slot .chg{display:none !important}
 .case .when{font:600 .74cqw var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);margin:.8cqw 0 1cqw}
 .case p{font-size:1.08cqw;line-height:1.6;font-weight:300;margin:0;opacity:.88}
 .cmp-set{display:none}.cmp-set.on{display:block}
+.bog{position:absolute;inset:0;padding:2.2cqw 2.6cqw;background:radial-gradient(ellipse at 30% 20%,#3a302a,#1d1815 75%)}
+.bog .kicker{display:block;margin-bottom:1.4cqw}
+.bog ol{list-style:none;margin:0;padding:0;border-left:1px solid rgba(230,201,125,.45)}
+.bog li{position:relative;padding:0 0 1.15cqw 1.6cqw}
+.bog li::before{content:'';position:absolute;left:-.38cqw;top:.45cqw;width:.7cqw;height:.7cqw;border-radius:50%;background:var(--gold2)}
+.bog b{display:block;font-family:var(--serif);font-size:1.45cqw;color:var(--gold2);font-weight:600;line-height:1.1}
+.bog span{font-size:.95cqw;line-height:1.45;opacity:.85}
+.compare.anim .ly-b{transition:clip-path 1.6s cubic-bezier(.6,0,.3,1)}
+.compare.anim .bar{transition:left 1.6s cubic-bezier(.6,0,.3,1)}
 
 /* ============ SALA 8 ============ */
 .res{padding:.8cqw 1.1cqw;border-left:.2cqw solid #9a7630;background:rgba(255,250,240,.5);margin-bottom:.7cqw}
@@ -332,6 +341,10 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
 #remote .rbtns button{height:22vh;border-radius:16px;border:1px solid rgba(201,162,74,.5);background:#231e1b;color:var(--gold2);font:600 18px var(--sans);letter-spacing:.15em;text-transform:uppercase}
 #remote .rbtns button.nx{background:var(--gold);color:#1b1410;border-color:var(--gold)}
 #remote .rbtns button:active{transform:scale(.97)}
+#remote .rchips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+#remote .rchips:empty{display:none}
+#remote .rchips button{flex:1 1 30%;padding:12px 6px;border-radius:10px;border:1px solid rgba(201,162,74,.45);background:#231e1b;color:var(--ivory);font:500 13px var(--sans)}
+#remote .rchips button.on{background:var(--gold);color:#1b1410;border-color:var(--gold);font-weight:600}
 #remote .rmini{display:flex;gap:10px;margin-top:12px}
 #remote .rmini button{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(201,162,74,.35);background:transparent;color:var(--gold2);font-size:13px}
 #remote .rstatus{font-size:12px;text-align:center;opacity:.7;margin-top:8px}
@@ -575,7 +588,7 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
           <div class="arg" data-r="1">El acto puede eclipsar la causa: se habla de la sopa, no del clima.</div>
         </div>
       </div>
-      <div class="bal-quote" id="balQuote">Los activistas preguntaron qué vale más, el arte o la vida. <span class="gold">¿Es un dilema real… o un falso dilema?</span></div>
+      <div class="bal-quote" id="balQuote">¿Quiénes le dan más importancia a la protesta? <span class="gold">¿Y quiénes al patrimonio?</span></div>
     </div>
   </div>
 </section>
@@ -590,6 +603,7 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
       <button class="on" data-c="0">Palmira · 2015</button>
       <button data-c="1">Bamiyán · 2001</button>
       <button data-c="2">Mostar · 1993</button>
+      <button data-c="3">Bogotá · 2026</button>
     </div>
     <div class="spot" style="left:2cqw;top:12cqw;width:58cqw;height:38cqw"></div>
     <div class="frame" style="left:6cqw;top:17.4cqw;width:50cqw;height:28.6cqw">
@@ -602,13 +616,21 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
           <div class="ly ly-a"><div class="slot" data-slot="bamiyan-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · BUDAS DE BAMIYÁN, ANTES]"></div></div>
           <div class="ly ly-b"><div class="slot" data-slot="bamiyan-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · NICHOS VACÍOS, DESPUÉS DE 2001]"></div></div>
           <div class="bar"><div class="knob">⟷</div></div></div></div>
+        <div class="cmp-set" data-c="3"><div class="bog">
+          <div class="kicker">Museo Nacional de Colombia · Bogotá</div>
+          <ol>
+            <li><b>15 oct</b><span>Por orden del Gobierno se retiran 63 piezas de las salas.</span></li>
+            <li><b>17–18 oct</b><span>Plantones frente al museo; jóvenes pegan copias de las obras en sus muros.</span></li>
+            <li><b>19 oct</b><span>Un juez admite una tutela y ordena conservar las piezas.</span></li>
+            <li><b>30 oct</b><span>Por orden judicial, las obras vuelven a las salas.</span></li>
+          </ol></div></div>
         <div class="cmp-set" data-c="2"><div class="compare">
           <div class="ly ly-a"><div class="slot" data-slot="mostar-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · PUENTE VIEJO, 1993]"></div></div>
           <div class="ly ly-b"><div class="slot" data-slot="mostar-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · PUENTE RECONSTRUIDO, 2004]"></div></div>
           <div class="bar"><div class="knob">⟷</div></div></div></div>
               </div>
     </div>
-    <div class="caprow" style="left:6cqw;top:46.6cqw;width:50cqw"><span>← Antes</span><span>Después →</span></div>
+    <div class="caprow" data-cmp style="left:6cqw;top:46.6cqw;width:50cqw"><span>← Antes</span><span>Después →</span></div>
     <div class="abs" style="left:60cqw;top:17.4cqw;width:34cqw">
       <div class="case on" data-c="0"><h3>Templo de Bel</h3><div class="when">Palmira, Siria · s. I d. C. → 2015</div>
         <p>Resistió casi dos mil años de terremotos e imperios. En 2015 el Estado Islámico lo dinamitó para borrar un pasado que no encajaba en su relato.</p></div>
@@ -616,7 +638,9 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
         <p>Dos colosos de 55 y 38 metros tallados en la roca. Los talibanes los dinamitaron; hoy quedan los nichos vacíos, como una ausencia con forma.</p></div>
       <div class="case" data-c="2"><h3>Puente Viejo</h3><div class="when">Mostar, Bosnia · 1566 → 1993 → 2004</div>
         <p>Unía dos orillas y dos comunidades. Fue derribado durante la guerra y reconstruido piedra a piedra once años después… <span class="gold">¿es el mismo puente?</span></p></div>
-      <p class="serif-line" style="margin-top:2.2cqw;border-top:1px solid rgba(230,201,125,.35);padding-top:1.2cqw">A veces la destrucción del patrimonio no es un daño colateral: <span class="gold">es el objetivo.</span></p>
+      <div class="case" data-c="3"><h3>Museo Nacional</h3><div class="when">Bogotá, Colombia · octubre de 2026</div>
+        <p>Entre las piezas retiradas había obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Gobierno habló de evitar el «adoctrinamiento político»; sus críticos, de censura.</p></div>
+      <p id="warQuote" class="serif-line" style="margin-top:2.2cqw;border-top:1px solid rgba(230,201,125,.35);padding-top:1.2cqw">A veces la destrucción del patrimonio no es un daño colateral: <span class="gold">es el objetivo.</span></p>
     </div>
   </div>
 </section>
@@ -663,12 +687,11 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
       <div class="inner"><img class="art" id="s9img" src="img/girasoles.jpg" alt="Los girasoles"><canvas id="dissolveCv"></canvas></div>
     </div>
     <div class="abs" style="left:6cqw;top:22cqw;width:28cqw;text-align:right" data-step="1">
-      <p class="big-line">El soporte puede <em class="gold">desaparecer.</em></p>
-      <p class="small-line">El lienzo, la piedra, el pigmento.</p>
+      <p class="big-line">El arte puede <em class="gold">desaparecer.</em></p>
     </div>
     <div class="abs" style="left:66cqw;top:22cqw;width:28cqw" data-step="2">
-      <p class="big-line">El significado puede <em class="gold">persistir.</em></p>
-      <p class="small-line">En la memoria, en las copias, en quienes alguna vez la miraron.</p>
+      <p class="big-line">Pero su significado puede <em class="gold">persistir.</em></p>
+      <p class="small-line">En la memoria, en las copias, en quienes alguna vez lo miraron.</p>
     </div>
     <p class="serif-line abs" style="left:0;right:0;top:45.4cqw;text-align:center;margin:0;font-size:1.55cqw" data-step="3">Pero no todo sobrevive: hay pérdidas que <span class="gold">ninguna memoria puede reparar.</span></p>
   </div>
@@ -740,6 +763,7 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
   <h2 id="rTitle">Control remoto</h2>
   <div class="rstep" id="rStep"></div>
   <div class="rnotes" id="rNotes">Abriendo conexión con la presentación…</div>
+  <div class="rchips" id="rChips"></div>
   <div class="rbtns"><button id="rPrev">◀ Atrás</button><button class="nx" id="rNext">Siguiente ▶</button></div>
   <div class="rmini"><button id="rMusic">♪ Música</button><button id="rBlack">Pantalla negra</button></div>
   <div class="rstatus" id="rStatus"></div>
@@ -755,16 +779,16 @@ const SALAS=[
   verbal:'Abre con la pregunta y no la respondas: «¿Qué destruimos cuando destruimos el arte?». Anuncia: «Hoy no les voy a mostrar diapositivas; vamos a recorrer juntos un museo de diez salas».',
   vocal:'Voz pausada y firme. Pausa de 2 segundos justo después de la pregunta.',
   visual:'De pie, centrado, peso en ambos pies. Recorre al público con la mirada antes de decir la primera palabra.'},
- {steps:0,time:'0:40',mood:0,fase:'Introducción',
+ {steps:1,time:'0:40',mood:0,fase:'Introducción',labels:['Materia','Significado'],
   verbal:'Si una obra fuera solo un objeto, destruirla sería como romper una silla. Pero no reaccionamos igual. «Nadie llora por la piedra; lloramos por lo que significaba».',
   vocal:'Baja el volumen en «nadie llora por la piedra» para crear cercanía.',
   visual:'Activa el interruptor Materia → Significado señalando la imagen con la mano abierta.',
   publico:'Saberes previos: «Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada».'},
- {steps:0,time:'0:45',mood:0,fase:'Desarrollo',
+ {steps:5,time:'0:45',mood:0,fase:'Desarrollo',labels:['1 Platón','2 Aristóteles','3 Apolo','4 Atenea','5 Heráclito','6 Perspectiva'],
   verbal:'El arte es un lenguaje. Punto 1: Platón señala arriba. Punto 2: Aristóteles señala abajo. Dos filosofías sin una sola palabra. Define alegoría y cierra con el punto 6: la composición nos dice dónde mirar.',
   vocal:'Enfatiza «sin una sola palabra».',
   visual:'Imita los gestos: dedo hacia arriba (Platón), mano abierta hacia abajo (Aristóteles). El cuerpo también explica.'},
- {steps:0,time:'0:50',mood:0,fase:'Desarrollo',
+ {steps:5,time:'0:50',mood:0,fase:'Desarrollo',labels:['1 Torres','2 Cabalgata','3 Esfera','4 Frutos','5 Mejillón','6 Búho'],
   verbal:'El Bosco no explicó su obra: tenemos lecturas, no certezas. Recorre tres detalles (esfera de cristal, frutos, búho). Idea fuerza: una sola imagen puede contener todo un tratado moral.',
   vocal:'Ritmo más lento al describir, tono de misterio.',
   visual:'Acércate a la pantalla al señalar los detalles y vuelve al centro para decir la idea fuerza.',
@@ -773,43 +797,63 @@ const SALAS=[
   verbal:'El arte es un documento involuntario: nadie lo pintó para que fuera historia, y sin embargo lo es. Sin el arte rupestre, ¿qué sabríamos de quienes no escribían? Remata con la metáfora de la página arrancada.',
   vocal:'Di la metáfora despacio, separando las palabras.',
   visual:'Barre con la mano las tres obras de izquierda a derecha, como una línea del tiempo.'},
- {steps:0,time:'1:00',mood:1,fase:'Desarrollo',
+ {steps:5,time:'1:00',mood:1,fase:'Desarrollo',labels:['Hechos','Sopa','Libertad 1','Patrimonio 1','Libertad 2','Patrimonio 2'],
   verbal:'Primero los hechos, sin juzgar: 14 de octubre de 2022, National Gallery, Just Stop Oil, sopa de tomate, vidrio protector. Arrastra el deslizador. Luego la balanza: un argumento por lado y después el segundo.',
   vocal:'Tono neutro e informativo en los datos; más intensidad en la pregunta final.',
-  visual:'Da un paso a la izquierda para una postura y a la derecha para la otra: el espacio muestra el debate. Señala la balanza: es, además, una alegoría de la justicia.',
-  publico:'Construcción colectiva: votación a mano alzada, ¿libertad de protesta o patrimonio? Comenta el resultado.'},
- {steps:0,time:'0:50',mood:2,fase:'Desarrollo',
+  visual:'Da un paso a la izquierda para una postura y a la derecha para la otra: el espacio muestra el debate.',
+  publico:'Construcción colectiva: «¿Quiénes le dan más importancia a la protesta? ¿Y quiénes al patrimonio?». Cuenta las manos y comenta el resultado.'},
+ {steps:4,time:'1:10',mood:2,fase:'Desarrollo',labels:['Palmira','Palmira después','Bamiyán','Mostar','Bogotá 2026'],
   verbal:'De la protesta simbólica a la destrucción real: Palmira, Bamiyán, Mostar (cambia de pestaña). En Mostar: si se reconstruye, ¿es el mismo puente? Destruir el patrimonio es atacar la identidad de un pueblo.',
   vocal:'Voz más grave y lenta. Silencio breve después de «es el objetivo».',
-  visual:'Quédate quieto: aquí la seriedad la da la quietud.'},
- {steps:3,time:'0:50',mood:1,fase:'Desarrollo',
+  visual:'Quédate quieto: aquí la seriedad la da la quietud. En el caso de Bogotá, da un paso al frente: es nuestra historia.'},
+ {steps:3,time:'0:50',mood:1,fase:'Desarrollo',labels:['Alegoría','Línea 1','Línea 2','Línea 3'],
   verbal:'«El discurso usa los mismos recursos que el arte». Alegoría: conecta con la Sala VI («¿recuerdan la balanza? Es la justicia hecha imagen») y con el amor, una de las alegorías más bellas: un corazón con alas. Luego recita la anáfora, una línea por cada clic.',
   vocal:'Crescendo: cada línea un poco más fuerte que la anterior. Pausa antes de cada «pero no».',
   visual:'Mira a una zona distinta del público en cada línea: izquierda, centro, derecha.'},
- {steps:3,time:'0:40',mood:1,fase:'Conclusión',
+ {steps:3,time:'0:40',mood:1,fase:'Conclusión',labels:['Pregunta','Desaparece','Persiste','Matiz'],
   verbal:'Clic: la pintura se deshace. Clic: el significado regresa como recuerdo dorado. Clic: matiza, no todo sobrevive; hay pérdidas irreparables.',
   vocal:'Dos o tres segundos de silencio total mientras la pintura se deshace.',
   visual:'Gírate hacia la pintura mientras desaparece y vuelve al público para hablar.'},
- {steps:3,time:'0:30',mood:0,fase:'Conclusión',
+ {steps:3,time:'0:30',mood:0,fase:'Conclusión',labels:['Pausa','Frase 1','Frase 2','Gracias'],
   verbal:'Primera línea y pausa larga. Segunda línea mirando al público: es un llamado a la reflexión. Silencio. «Gracias».',
   vocal:'Lo más lento de todo el discurso. Termina con tono descendente y firme.',
   visual:'Da un paso al frente para la pregunta final y sostén la mirada tres segundos antes de agradecer.'}
 ];
 const SPEECH=[
  ['Buenos días. Quiero empezar con una pregunta, y les pido que todavía no la respondan: ¿qué destruimos cuando destruimos el arte? [pausa] Hoy no les voy a mostrar diapositivas. Los invito a caminar conmigo por un museo de diez salas. Al final del recorrido volveremos a esta pregunta… y veremos si sigue teniendo la misma respuesta.'],
- ['Empecemos por lo más simple. ¿Qué es una obra de arte? Si la miramos como objeto, es piedra, pigmento, lienzo, bronce: materia. [activa el interruptor] Pero si fuera solo eso, destruir una escultura sería como romper una silla, y no reaccionamos igual. Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada. [pausa] ¿Qué sintieron? Porque nadie llora por la piedra. Lloramos por lo que significaba: memoria, identidad, fe, orgullo.'],
- ['Y es que el arte es un lenguaje. Miren La escuela de Atenas, de Rafael. En el centro, Platón señala hacia arriba: el mundo de las ideas. A su lado, Aristóteles extiende la mano hacia la tierra: el conocimiento que nace de lo que percibimos. Dos filosofías completas… sin una sola palabra. Eso es una alegoría: una idea abstracta convertida en imagen. Y fíjense en la arquitectura: todas las líneas convergen en ellos dos. Rafael no solo pintó personas; nos dijo dónde mirar.'],
- ['Ahora, El jardín de las delicias, de El Bosco, pintado hace más de quinientos años. El Bosco nunca explicó su obra, así que lo que tenemos son lecturas, no certezas. Les pregunto: ¿qué creen que significa una pareja encerrada en una burbuja de cristal? [escucha una respuesta] Un proverbio flamenco decía: «la dicha es como el vidrio, pronto se rompe». Y están los frutos gigantes, dulces pero efímeros, y el búho, que podía ser sabiduría… o pecado. Una sola pintura puede contener todo un tratado sobre el placer, el deseo y la moral de una época.'],
+ ['Empecemos por lo más simple. ¿Qué es una obra de arte? Si miramos el Partenón como objeto, es mármol, columnas, piedra: materia. Pero si fuera solo eso, destruirlo sería como romper una silla, y no reaccionamos igual.',
+  '[cambia a «Significado»] Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada. [pausa] ¿Qué sintieron? Porque nadie llora por la piedra. Lloramos por lo que significaba: memoria, identidad, fe, orgullo.'],
+ ['Y es que el arte es un lenguaje. Miren La escuela de Atenas, de Rafael. En el centro, Platón señala hacia arriba: el mundo de las ideas.',
+  'A su lado, Aristóteles extiende la mano hacia la tierra: el conocimiento que nace de lo que percibimos. Dos filosofías completas… sin una sola palabra.',
+  'A la izquierda, Apolo, el dios de las artes y la armonía.',
+  'A la derecha, Atenea, la sabiduría. Eso es una alegoría: una idea abstracta convertida en imagen.',
+  'Abajo, Heráclito, solitario y pensativo; la tradición dice que Rafael le dio el rostro de Miguel Ángel.',
+  'Y fíjense en la arquitectura: todas las líneas convergen en ellos dos. Rafael no solo pintó personas; nos dijo dónde mirar.'],
+ ['Ahora, El jardín de las delicias, de El Bosco, pintado hace más de quinientos años. El Bosco nunca explicó su obra: tenemos lecturas, no certezas. Arriba, torres y fuentes imposibles: un paraíso artificial.',
+  'En el centro, jinetes que giran sin fin alrededor de un estanque: el deseo como un ciclo que no se detiene.',
+  'Les pregunto: ¿qué creen que significa esta pareja encerrada en una burbuja de cristal? [escucha una respuesta] La dicha es como el vidrio: pronto se rompe.',
+  'Frutos gigantes: placeres dulces, pero efímeros.',
+  'Una pareja encerrada en una concha: el placer que aísla.',
+  'Y el búho, que podía ser sabiduría… o pecado. Una sola pintura puede contener todo un tratado sobre el placer, el deseo y la moral de una época.'],
  ['Por eso el arte también es un testigo. Nadie pintó las cuevas hace miles de años para que fueran un libro de historia, y sin embargo lo son: nos cuentan qué temían, qué cazaban y qué veneraban personas que nunca escribieron. Los monumentos nos dicen quién gobernaba; las pinturas, cómo se vivió un acontecimiento. Cada obra perdida es una página arrancada de nuestra biografía colectiva.'],
- ['Ahora, una escena real. El 14 de octubre de 2022, en la National Gallery de Londres, dos activistas de Just Stop Oil lanzaron sopa de tomate sobre Los girasoles de Van Gogh y luego se pegaron a la pared. Protestaban contra nuevos proyectos de petróleo y gas. [mueve el deslizador] La pintura estaba protegida por un vidrio: quedó intacta y el marco sufrió daños menores. ¿Fue legítimo? Pongámoslo en una balanza que, por cierto, es la alegoría de la justicia. [pulsa «Libertad de protesta»] De un lado, la libertad de protesta: el gesto puso la crisis climática en los titulares del mundo y la obra no corrió un peligro real. [pulsa «Patrimonio»] Del otro, el patrimonio: se arriesgan bienes irremplazables, y el acto puede eclipsar la causa; terminamos hablando de la sopa y no del clima. Votemos: levanten la mano quienes ponen más peso en la protesta… ¿y en el patrimonio? Los activistas preguntaron qué vale más, el arte o la vida. Yo les dejo otra pregunta: ¿es un dilema real… o un falso dilema?'],
- ['Pero hay casos en los que no hay vidrio que proteja. En 2015, el Estado Islámico dinamitó el Templo de Bel, en Palmira, Siria, que había resistido casi dos mil años. [pestaña Bamiyán] En 2001, los talibanes destruyeron los Budas de Bamiyán, en Afganistán; hoy solo quedan los nichos vacíos. [pestaña Mostar] Y en 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar. Se reconstruyó en 2004, piedra a piedra… pero ¿es el mismo puente? En la guerra, destruir el patrimonio de un pueblo es atacar su memoria y su identidad. A veces no es un daño colateral. [pausa] Es el objetivo.'],
+ ['Ahora, una escena real. El 14 de octubre de 2022, en la National Gallery de Londres, dos activistas de Just Stop Oil lanzaron sopa de tomate sobre Los girasoles de Van Gogh y luego se pegaron a la pared. Protestaban contra nuevos proyectos de petróleo y gas.',
+  '[la sopa cubre la pintura] La pintura estaba protegida por un vidrio: quedó intacta, y el marco sufrió daños menores. Veamos los argumentos de cada lado.',
+  'Desde la libertad de protesta: el gesto puso la crisis climática en los titulares de todo el mundo.',
+  'Desde el patrimonio: se arriesgan bienes irremplazables, y el gesto puede inspirar imitaciones.',
+  'Desde la libertad de protesta: la obra estaba protegida; el impacto buscado era simbólico, no material.',
+  'Desde el patrimonio: el acto puede eclipsar la causa; terminamos hablando de la sopa y no del clima. Ahora ustedes: ¿quiénes le dan más importancia a la protesta? [cuenta las manos] ¿Y quiénes al patrimonio? [cuenta las manos]'],
+ ['Pero hay casos en los que no hay vidrio que proteja. El Templo de Bel, en Palmira, Siria, resistió casi dos mil años de terremotos e imperios.',
+  'En 2015, el Estado Islámico lo dinamitó.',
+  'En 2001, los talibanes destruyeron los Budas de Bamiyán, en Afganistán; hoy solo quedan los nichos vacíos.',
+  'Y en 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar. Se reconstruyó en 2004, piedra a piedra… pero ¿es el mismo puente?',
+  'Y no hay que ir tan lejos. El 15 de octubre de este año, aquí en Bogotá, el Gobierno ordenó retirar 63 piezas del Museo Nacional, entre ellas obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Ministerio de Cultura dijo que el museo no debía ser un instrumento de adoctrinamiento político; sus críticos lo llamaron censura. Hubo plantones, una tutela y, el 30 de octubre, por orden de un juez, las obras volvieron a las salas. [pausa] No siempre se destruye con dinamita: a veces basta con descolgar.'],
  ['Así como el arte construye con imágenes, nosotros construimos con palabras. Una alegoría es una idea abstracta hecha imagen. Piensen en la dama de la justicia: sostiene una balanza, que es la equidad; tiene los ojos vendados, porque juzga sin mirar a quién; y empuña una espada, que es la fuerza de la ley. Y quizá la alegoría más significativa de la vida sea el amor: algo que no se ve y, sin embargo, lo mueve todo. Escuchen:',
   '«Pueden quemar el lienzo, pero no la mirada que aprendió a ver en él.»',
   '«Pueden derribar el templo, pero no la fe que lo levantó piedra a piedra.»',
   '«Pueden borrar la imagen… pero no la memoria que ya la lleva por dentro.»'],
  ['Entonces, ¿puede el arte sobrevivir a su destrucción?',
-  '[silencio mientras se deshace] El soporte puede desaparecer: el lienzo, la piedra, el pigmento.',
-  'Pero el significado puede persistir: en la memoria, en las copias, en quienes alguna vez la miraron. Ustedes seguirían reconociendo Los girasoles aunque ya no existieran.',
+  '[silencio mientras se deshace] El arte puede desaparecer.',
+  'Pero su significado puede persistir: en la memoria, en las copias, en quienes alguna vez lo miraron. Ustedes seguirían reconociendo Los girasoles aunque ya no existieran.',
   'Sin embargo, no seamos ingenuos: no todo sobrevive. Hay pérdidas que ninguna memoria puede reparar. Por eso cuidar el arte no es un lujo: es cuidar quiénes somos.'],
  ['[pausa] Volvamos a la pregunta del inicio.',
   'Podemos destruir un lienzo, derribar un monumento o borrar una imagen…',
@@ -851,6 +895,9 @@ if(REMOTE_ID){
     $('rTitle').textContent=titles[i];
     $('rStep').textContent=(S.steps?('Paso '+step+' de '+S.steps+' · '):'')+'tiempo sugerido '+S.time+(connected?'':' · modo sin conexión');
     $('rNotes').innerHTML=notesHTML(S,step,true);
+    const ch=$('rChips'); ch.innerHTML='';
+    (S.labels||[]).forEach((lab,k)=>{const b=document.createElement('button');b.textContent=lab;if(k===step)b.className='on';
+      b.onclick=()=>{ if(navigator.vibrate)navigator.vibrate(18); if(conn&&conn.open)conn.send({type:'cmd',cmd:'goto',step:k}); else { ls=k; render(li,ls); } }; ch.appendChild(b);});
     const cur=$('rNotes').querySelector('p[data-k="'+Math.min(step,S.speech.length-1)+'"]');
     if(cur) cur.scrollIntoView({block:'center',behavior:'smooth'});
     if(time){$('rTime').textContent=time; if(col)$('rTime').style.color=col;}
@@ -901,6 +948,14 @@ function paintHud(){[...hud.children].forEach((b,i)=>{b.classList.toggle('on',i=
 function applySteps(i){
   const n=revealed[i];
   salas[i].querySelectorAll('[data-step]').forEach(el=>el.classList.toggle('on',+el.dataset.step<=n));
+  if(i===1) setSig(n>=1);
+  if(i===2) pickAthens(Math.min(n,5));
+  if(i===3) pickBosch(Math.min(n,5));
+  if(i===5){ slideTo($('cmpSun'), n>=1?8:50, true); setBalance((n>=2)+(n>=4),(n>=3)+(n>=5)); }
+  if(i===6){ const c=n<=1?0:(n===2?1:(n===3?2:3)); setCase(c);
+    const cmp=document.querySelector('.cmp-set[data-c="'+c+'"] .compare');
+    if(c===0) slideTo(cmp, n>=1?6:50, true);
+    else if(c<3){ slideTo(cmp,50,false); setTimeout(()=>{ if(curCase===String(c)) slideTo(cmp,6,true); },900); } }
   if(i===7) $('anaHint').style.opacity=n>=3?0:.4;
   if(i===8) dissolve.setState(n);
 }
@@ -980,7 +1035,7 @@ function updateNotes(){
 function toggleNotes(){document.body.classList.toggle('notes-on');}
 $('notesBtn').onclick=toggleNotes;
 function paceInfo(){const el=t0?(Date.now()-t0)/1000:0, plan=SALAS[cur].planEnd, d=el-plan;
-  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 7:10 (máx. 8:00)',col,el};}
+  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 7:40 (máx. 8:00)',col,el};}
 setInterval(()=>{const p=paceInfo();$('notesTime').textContent=p.txt;$('notesTime').style.color=p.col;$('timerChip').textContent=fmt(p.el*1000);$('timerChip').style.color=p.col;},500);
 setInterval(()=>pushState(),2000);
 
@@ -1046,7 +1101,8 @@ $('slotFile').addEventListener('change',e=>{const f=e.target.files[0];if(f&&pend
 /* =========================================================
    SALA II · interruptor materia / significado
    ========================================================= */
-$('swBtn').onclick=()=>{const on=$('swBtn').classList.toggle('on');$('words').classList.toggle('sig',on);$('labM').classList.toggle('on',!on);$('labS').classList.toggle('on',on);};
+function setSig(on){$('swBtn').classList.toggle('on',on);$('words').classList.toggle('sig',on);$('labM').classList.toggle('on',!on);$('labS').classList.toggle('on',on);}
+$('swBtn').onclick=()=>setSig(!$('swBtn').classList.contains('on'));
 
 /* =========================================================
    SALA III · La escuela de Atenas (puntos)
@@ -1065,9 +1121,9 @@ function hotspots(innerSel,data,infoId,onPick){
   function pick(i){btns.forEach((b,j)=>b.classList.toggle('on',j===i));
     info.innerHTML='<div class="fade"><span class="num">'+(i+1)+'</span><h4>'+data[i][0]+'</h4><p>'+data[i][1]+'</p></div>'; if(onPick)onPick(i);}
   btns.forEach((b,i)=>b.addEventListener('click',e=>{e.stopPropagation();pick(i);}));
-  pick(0);
+  pick(0); return pick;
 }
-hotspots('#athensFrame .inner',ATHENS,'athensInfo');
+const pickAthens=hotspots('#athensFrame .inner',ATHENS,'athensInfo');
 
 /* =========================================================
    SALA IV · El jardín de las delicias (lupa)
@@ -1075,7 +1131,7 @@ hotspots('#athensFrame .inner',ATHENS,'athensInfo');
 const BOSCH=[
  {x:.50,y:.215,z:4.2,t:'Fuentes y torres fantásticas',d:'Arquitecturas imposibles, mitad mineral y mitad vegetal: un paraíso artificial, bello y extraño a la vez.'},
  {x:.50,y:.43,z:3.4,t:'La cabalgata del deseo',d:'Jinetes sobre todo tipo de animales giran sin fin alrededor de un estanque de mujeres: el deseo como un ciclo que no se detiene.'},
- {x:.133,y:.69,z:4.4,t:'La esfera de cristal',d:'Una pareja dentro de una burbuja frágil. Un proverbio flamenco decía: «la dicha es como el vidrio, pronto se rompe».'},
+ {x:.133,y:.69,z:4.4,t:'La esfera de cristal',d:'Una pareja dentro de una burbuja frágil: «la dicha es como el vidrio, pronto se rompe».'},
  {x:.387,y:.62,z:4.4,t:'Frutos gigantes',d:'Frutos y bayas enormes, de los que asoman cabezas humanas: placeres dulces pero efímeros, que se pudren pronto.'},
  {x:.32,y:.72,z:4.2,t:'El mejillón',d:'Una pareja encerrada en una concha: el placer que encierra y aísla.'},
  {x:.893,y:.65,z:4.6,t:'El búho',d:'En la iconografía de la época podía aludir a la sabiduría… o a la oscuridad y el pecado. La ambigüedad es parte del mensaje.'}
@@ -1093,11 +1149,12 @@ function focusBosch(i){
   lensBox.style.left=((cx-fw/2)*100)+'%'; lensBox.style.top=((cy-fh/2)*100)+'%';
   lensBox.style.width=(fw*100)+'%'; lensBox.style.height=(fh*100)+'%';
 }
-hotspots('#boschInner',BOSCH.map(b=>[b.t,b.d]),'boschInfo',focusBosch);
+const pickBosch=hotspots('#boschInner',BOSCH.map(b=>[b.t,b.d]),'boschInfo',focusBosch);
 
 /* =========================================================
    COMPARADORES (antes / después)
    ========================================================= */
+function slideTo(c,x,anim){ if(!c)return; c.classList.toggle('anim',!!anim); c.style.setProperty('--x',x+'%'); if(anim)setTimeout(()=>c.classList.remove('anim'),1700); }
 document.querySelectorAll('.compare').forEach(c=>{
   const knob=c.querySelector('.knob'); let drag=false;
   const setX=cx=>{const r=c.getBoundingClientRect();const x=Math.min(98,Math.max(2,(cx-r.left)/r.width*100));c.style.setProperty('--x',x+'%');};
@@ -1106,25 +1163,28 @@ document.querySelectorAll('.compare').forEach(c=>{
   knob.addEventListener('pointerup',()=>drag=false);
 });
 /* pestañas de la Sala VII */
-document.querySelectorAll('#caseTabs button').forEach(b=>b.onclick=()=>{
-  const c=b.dataset.c;
-  document.querySelectorAll('#caseTabs button').forEach(x=>x.classList.toggle('on',x===b));
+let curCase='0';
+function setCase(c){ c=String(c); curCase=c;
+  document.querySelectorAll('#caseTabs button').forEach(x=>x.classList.toggle('on',x.dataset.c===c));
   document.querySelectorAll('.case,.cmp-set').forEach(x=>x.classList.toggle('on',x.dataset.c===c));
-});
+  const cap=document.querySelector('.caprow[data-cmp]'); if(cap) cap.style.visibility=(c==='3')?'hidden':'visible';
+  const q=document.getElementById('warQuote'); if(q) q.innerHTML=(c==='3')?'No siempre se destruye con dinamita: <span class="gold">a veces basta con descolgar.</span>':'A veces la destrucción del patrimonio no es un daño colateral: <span class="gold">es el objetivo.</span>'; }
+document.querySelectorAll('#caseTabs button').forEach(b=>b.onclick=()=>setCase(b.dataset.c));
 
 /* =========================================================
    SALA VI · la balanza
    ========================================================= */
 const bal={L:0,R:0};
-document.querySelectorAll('.bal-btn').forEach(b=>b.onclick=()=>{
-  const s=b.dataset.side; if(bal[s]<2)bal[s]++;
-  document.querySelectorAll('.arg[data-'+s.toLowerCase()+']').forEach(a=>a.classList.toggle('on',+a.dataset[s.toLowerCase()]<bal[s]));
+function setBalance(L,Rr){ bal.L=L; bal.R=Rr; renderBal(); }
+document.querySelectorAll('.bal-btn').forEach(b=>b.onclick=()=>{ const s=b.dataset.side; if(bal[s]<2)bal[s]++; renderBal(); });
+function renderBal(){
+  ['L','R'].forEach(s=>document.querySelectorAll('.arg[data-'+s.toLowerCase()+']').forEach(a=>a.classList.toggle('on',+a.dataset[s.toLowerCase()]<bal[s])));
   const ang=Math.max(-14,Math.min(14,(bal.R-bal.L)*7));
   $('beam').style.transform='rotate('+ang+'deg)';
   document.querySelectorAll('.pan').forEach(p=>p.style.transform='rotate('+(-ang)+'deg)');
   $('panL').style.transformOrigin='30px 40px'; $('panR').style.transformOrigin='170px 40px';
   $('balQuote').classList.toggle('on',bal.L+bal.R>=4);
-});
+}
 
 /* =========================================================
    SALA IX · disolución de la pintura en partículas
@@ -1290,7 +1350,7 @@ $('audioFile').onchange=e=>{const f=e.target.files[0];if(f){audio.start();audio.
 let peer=null, conns=[];
 function stateMsg(){const S=SALAS[cur];return{type:'state',i:cur,title:salas[cur].dataset.title,fase:S.fase,pace:paceInfo(),step:revealed[cur],steps:S.steps,target:S.time,time:elapsed()};}
 function pushState(){conns.forEach(c=>{try{if(c.open)c.send(stateMsg());}catch(e){}});}
-function handleCmd(cmd){ if(!entered)enter(); if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
+function handleCmd(cmd,d){ if(!entered)enter(); if(cmd==='goto'){ revealed[cur]=Math.max(0,Math.min(SALAS[cur].steps,d.step|0)); applySteps(cur); updateNotes(); pushState(); return; } if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
 async function openRemote(){
   $('remoteModal').classList.add('on');
   if(peer&&peer.id){showQR(peer.id);return;}
@@ -1305,7 +1365,7 @@ async function openRemote(){
     peer.on('open',pid=>showQR(pid));
     peer.on('connection',c=>{conns.push(c);
       c.on('open',()=>{$('remoteStatus').textContent='celular conectado ✓';c.send(stateMsg());setTimeout(()=>$('remoteModal').classList.remove('on'),1400);});
-      c.on('data',d=>{if(d&&d.type==='cmd')handleCmd(d.cmd); if(d&&d.type==='hello')c.send(stateMsg());});
+      c.on('data',d=>{if(d&&d.type==='cmd')handleCmd(d.cmd,d); if(d&&d.type==='hello')c.send(stateMsg());});
       c.on('close',()=>{conns=conns.filter(x=>x!==c);$('remoteStatus').textContent='celular desconectado';});});
     peer.on('error',e=>{ if(e.type==='unavailable-id'){try{sessionStorage.removeItem('museo-peer');}catch(_){} }
       msg.innerHTML='No se pudo abrir la conexión ('+(e.type||'error')+'). Revisa tu internet e inténtalo de nuevo.'; });
