@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Qué destruimos cuando destruimos el arte?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --carbon:#1b1917; --ivory:#f5f0e6; --parch:#e8dcc4; --brown:#3a2a1f;
+  --gold:#c9a24a; --gold2:#e6c97d; --ink:#2a1f17;
+  --serif:'Cormorant Garamond', 'Times New Roman', serif;
+  --sans:'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#0f0d0c;font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button{font-family:inherit}
+body.idle, body.idle *{cursor:none !important}
+
+/* ============ MUNDO / PASILLO ============ */
+#world{position:fixed;inset:0;transform-origin:50% 58%}
+#world.walking{animation:walk 1.6s cubic-bezier(.45,0,.25,1)}
+@keyframes walk{
+  0%{transform:scale(1)}
+  28%{transform:scale(.88) translateY(.35vh)}
+  42%{transform:scale(.88) translateY(-.35vh)}
+  56%{transform:scale(.88) translateY(.35vh)}
+  72%{transform:scale(.88) translateY(-.2vh)}
+  100%{transform:scale(1)}
+}
+#track{display:flex;height:100%;width:1000vw;transition:transform 1.6s cubic-bezier(.65,0,.35,1);will-change:transform}
+.sala{position:relative;width:100vw;height:100vh;flex:none;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.wall-dark{background:radial-gradient(ellipse 75% 65% at 50% 28%,#3d352f 0%,#25201d 52%,#171413 100%);color:var(--ivory)}
+.wall-light{background:radial-gradient(ellipse 75% 65% at 50% 28%,#f8f2e5 0%,#e9dcc3 55%,#cfbd9c 100%);color:var(--ink)}
+/* textura sutil de muro */
+.sala .tex{position:absolute;inset:0;pointer-events:none;opacity:.35;background-image:
+  repeating-linear-gradient(0deg,rgba(0,0,0,.025) 0 2px,transparent 2px 5px),
+  repeating-linear-gradient(90deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px)}
+/* columnas / puertas entre salas */
+.sala::before,.sala::after{content:'';position:absolute;top:0;bottom:0;width:2.6vw;z-index:4;
+  background:linear-gradient(90deg,#120f0d,#2c2521 45%,#1b1714);box-shadow:0 0 3vw rgba(0,0,0,.55)}
+.sala::before{left:0;border-right:1px solid rgba(201,162,74,.35)}
+.sala::after{right:0;border-left:1px solid rgba(201,162,74,.35)}
+/* piso de madera */
+.floor{position:absolute;left:0;right:0;bottom:0;height:13vh;z-index:1;
+  background:linear-gradient(to bottom,rgba(0,0,0,.05),rgba(0,0,0,.5)),
+  repeating-linear-gradient(90deg,#4a3223 0 8vw,#3a281b 8vw 8.12vw,#553a28 8.12vw 16vw,#3a281b 16vw 16.12vw);
+  box-shadow:inset 0 1.5vh 2.5vh rgba(0,0,0,.55)}
+.floor::before{content:'';position:absolute;left:0;right:0;top:-1.1vh;height:1.1vh;background:#1c1410;border-top:1px solid rgba(201,162,74,.45)}
+.wall-light .floor{background:linear-gradient(to bottom,rgba(0,0,0,.02),rgba(0,0,0,.35)),
+  repeating-linear-gradient(90deg,#8a6646 0 8vw,#6e5036 8vw 8.12vw,#977253 8.12vw 16vw,#6e5036 16vw 16.12vw)}
+.wall-light .floor::before{background:#5a4230}
+/* luz cenital general */
+.ceiling{position:absolute;left:0;right:0;top:0;height:40vh;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 45% 100% at 50% 0%,rgba(255,228,170,.13),transparent 70%)}
+
+/* ============ ESCENARIO 16:9 ============ */
+.stage{position:relative;width:min(100vw,177.78vh);aspect-ratio:16/9;container-type:size;z-index:2}
+.plaque{position:absolute;left:50%;top:1.3cqw;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;
+  padding:.45cqw 2.4cqw .5cqw;min-width:13cqw;color:#2b1f12;text-align:center;font-size:0;
+  background:linear-gradient(180deg,#f3dc9a 0%,#d4b061 38%,#b8913f 62%,#e2c57c 100%);
+  border-radius:.25cqw;box-shadow:0 .25cqw .7cqw rgba(0,0,0,.45),inset 0 0 0 .1cqw rgba(255,245,210,.6),inset 0 0 0 .3cqw rgba(120,85,30,.35)}
+.plaque::before,.plaque::after{content:'';position:absolute;top:50%;width:.42cqw;height:.42cqw;margin-top:-.21cqw;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff2c8,#8a6a2a 70%);box-shadow:0 0 0 .05cqw rgba(60,40,10,.5)}
+.plaque::before{left:.8cqw}.plaque::after{right:.8cqw}
+.plaque b{font:600 .62cqw var(--sans);letter-spacing:.42em;text-transform:uppercase;opacity:.75;text-shadow:0 .05cqw 0 rgba(255,240,200,.6)}
+.plaque i{font:500 1.25cqw var(--serif);font-style:italic;line-height:1.1;text-shadow:0 .06cqw 0 rgba(255,240,200,.65)}
+.t{font-family:var(--serif);font-weight:500;font-size:3.5cqw;line-height:1.04;margin:0;letter-spacing:-.005em}
+.t em{font-style:italic;color:var(--gold2)}
+.wall-light .t em{color:#9a7630}
+.lead{font-size:1.28cqw;line-height:1.6;font-weight:300;margin:1.2cqw 0 0;opacity:.88}
+.lead strong{font-weight:500}
+.serif-line{font-family:var(--serif);font-style:italic;font-size:1.85cqw;line-height:1.3;margin:1.2cqw 0 0}
+.gold{color:var(--gold2)} .wall-light .gold{color:#9a7630}
+.kicker{font:600 .72cqw var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.wall-light .kicker{color:#9a7630}
+.abs{position:absolute}
+
+/* ============ MARCOS ============ */
+.frame{position:absolute;padding:.85cqw;z-index:2;
+  background:linear-gradient(135deg,#6f5120 0%,#e3c67c 20%,#9a7431 42%,#f0d993 60%,#8a6626 82%,#c9a24a 100%);
+  box-shadow:0 2.4cqw 3.6cqw rgba(0,0,0,.55),0 .3cqw .6cqw rgba(0,0,0,.45),inset 0 0 0 .14cqw rgba(255,240,200,.45),inset 0 0 0 .5cqw rgba(90,60,20,.35)}
+.frame.thin{padding:.5cqw}
+.inner{position:relative;width:100%;height:100%;overflow:hidden;background:#1d1815}
+.inner>img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.inner::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:5;box-shadow:inset 0 0 0 .28cqw #2a1d10,inset 0 0 1.6cqw rgba(0,0,0,.55)}
+.lamp{position:absolute;height:.55cqw;border-radius:0 0 .4cqw .4cqw;z-index:3;
+  background:linear-gradient(#2a221c,#4a3d30 60%,#c9a24a);box-shadow:0 .5cqw 1.6cqw rgba(255,220,150,.35)}
+.spot{position:absolute;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 50% 62% at 50% 0%,rgba(255,226,160,.30),rgba(255,226,160,.09) 48%,transparent 74%)}
+.wall-light .spot{background:radial-gradient(ellipse 50% 62% at 50% 0%,rgba(255,240,200,.75),rgba(255,236,190,.25) 50%,transparent 75%)}
+.cartela{position:absolute;z-index:3;background:#f8f3e9;color:var(--ink);padding:.75cqw 1.05cqw;font-size:.72cqw;line-height:1.5;
+  box-shadow:0 .35cqw 1cqw rgba(0,0,0,.35);border-left:.22cqw solid var(--gold)}
+.cartela b{display:block;font-family:var(--serif);font-style:italic;font-weight:600;font-size:1.12cqw;line-height:1.15;margin-bottom:.15cqw}
+.cartela span{opacity:.72}
+
+/* ============ ESPACIOS PARA IMAGEN ============ */
+.slot{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.55cqw;padding:2cqw;
+  text-align:center;cursor:pointer;color:var(--gold2);font:600 .74cqw var(--sans);letter-spacing:.14em;text-transform:uppercase;
+  background:repeating-linear-gradient(45deg,rgba(201,162,74,.07) 0 .9cqw,transparent .9cqw 1.8cqw),#2b2521;
+  transition:background .3s}
+.slot::before{content:'';position:absolute;inset:.9cqw;border:.11cqw dashed rgba(230,201,125,.55);pointer-events:none}
+.slot:hover{background:repeating-linear-gradient(45deg,rgba(201,162,74,.12) 0 .9cqw,transparent .9cqw 1.8cqw),#332b26}
+.slot svg{width:2.4cqw;height:2.4cqw;opacity:.75}
+.slot small{display:block;font:400 .66cqw var(--sans);letter-spacing:.02em;text-transform:none;opacity:.6;margin-top:.2cqw}
+.slot.drag{background:#3d332b}
+.slot.filled{cursor:default;padding:0}
+.slot.filled::before,.slot.filled>.lbl{display:none}
+.slot>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .chg{position:absolute;right:.7cqw;top:.7cqw;z-index:6;display:none;gap:.3cqw}
+.slot.filled:hover .chg{display:flex}
+body.idle .slot .chg{display:none !important}
+.chg button{border:0;background:rgba(20,16,14,.8);color:var(--gold2);font-size:.65cqw;padding:.35cqw .6cqw;border-radius:.3cqw;cursor:pointer;letter-spacing:.05em}
+
+/* ============ PUNTOS INTERACTIVOS ============ */
+.hs{position:absolute;z-index:6;width:2cqw;height:2cqw;margin:-1cqw 0 0 -1cqw;border-radius:50%;border:.14cqw solid #fff4d2;
+  background:rgba(201,162,74,.9);color:#1b1410;font:700 .82cqw var(--sans);cursor:pointer;padding:0;
+  animation:pulse 2.4s infinite;transition:transform .3s,background .3s}
+.hs:hover{transform:scale(1.15)}
+.hs.on{background:#fff4d2;transform:scale(1.2);animation:none;box-shadow:0 0 1.6cqw rgba(255,230,160,.9)}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(240,210,130,.75)}70%{box-shadow:0 0 0 1.3cqw rgba(240,210,130,0)}100%{box-shadow:0 0 0 0 rgba(240,210,130,0)}}
+
+/* ============ PASOS (revelado progresivo) ============ */
+[data-step]{opacity:0;transform:translateY(.9cqw);transition:opacity 1s ease,transform 1s ease}
+[data-step].on{opacity:1;transform:none}
+
+/* ============ SALA 1 ============ */
+.cover-name{font-family:var(--serif);font-size:1.55cqw;outline:none;border-bottom:1px dashed transparent}
+.cover-name:focus{border-bottom-color:var(--gold)}
+.rule{width:5cqw;height:1px;background:var(--gold);margin:2cqw 0 1.3cqw}
+
+/* ============ SALA 2: interruptor ============ */
+.switch{display:flex;align-items:center;gap:1cqw;margin-top:2.4cqw;font:600 .78cqw var(--sans);letter-spacing:.22em;text-transform:uppercase;user-select:none}
+.switch .lab{opacity:.45;transition:opacity .4s}
+.switch .lab.on{opacity:1;color:var(--gold2)}
+.switch button{position:relative;width:4.4cqw;height:2.2cqw;border-radius:2cqw;border:1px solid rgba(230,201,125,.6);background:#2c2522;cursor:pointer}
+.switch button i{position:absolute;top:.25cqw;left:.3cqw;width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--gold2);transition:left .5s cubic-bezier(.6,0,.3,1)}
+.switch button.on i{left:2.4cqw}
+.words{position:absolute;inset:0;z-index:7;pointer-events:none}
+.words span{position:absolute;padding:.35cqw .8cqw;border-radius:2cqw;font:500 .95cqw var(--sans);letter-spacing:.06em;
+  background:rgba(20,16,14,.72);color:var(--ivory);border:1px solid rgba(230,201,125,.35);backdrop-filter:blur(4px);
+  transition:opacity .7s ease,transform .7s ease}
+.words .m{opacity:1}
+.words .s{opacity:0;transform:scale(.85);font-family:var(--serif);font-style:italic;font-size:1.45cqw;color:var(--gold2);letter-spacing:0}
+.words.sig .m{opacity:0;transform:scale(.85)}
+.words.sig .s{opacity:1;transform:none}
+
+/* ============ SALA 3 / 4: paneles ============ */
+.concept{margin-top:1.8cqw;padding:1.1cqw 1.3cqw;border:1px solid rgba(154,118,48,.45);background:rgba(255,250,240,.45)}
+.concept .kicker{display:block;margin-bottom:.4cqw}
+.concept p{margin:0;font-family:var(--serif);font-size:1.45cqw;line-height:1.3}
+.info{margin-top:1.6cqw;min-height:9cqw}
+.info .fade{display:grid;grid-template-columns:auto 1fr;column-gap:1cqw}.info .num{font-family:var(--serif);font-size:2.6cqw;color:#9a7630;line-height:1;grid-row:span 2}
+.info h4{margin:0 0 .3cqw;font-family:var(--serif);font-size:1.7cqw;font-weight:600}
+.info p{margin:0;font-size:1.05cqw;line-height:1.55;opacity:.85}
+.info .fade{animation:fadeIn .6s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(.4cqw)}to{opacity:1;transform:none}}
+.lens{position:absolute;z-index:2;background-repeat:no-repeat;transition:background-position 1s cubic-bezier(.6,0,.3,1)}
+.lens-box{position:absolute;z-index:6;border:.13cqw solid #fff4d2;box-shadow:0 0 0 999cqw rgba(0,0,0,.28);pointer-events:none;transition:all 1s cubic-bezier(.6,0,.3,1)}
+.tag{position:absolute;z-index:7;font:600 .62cqw var(--sans);letter-spacing:.2em;text-transform:uppercase;background:rgba(20,16,14,.78);color:var(--gold2);padding:.35cqw .6cqw}
+.caprow{position:absolute;display:flex;justify-content:space-between;font:600 .62cqw var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--gold2)}
+.caprow i{font-family:var(--serif);font-size:.95cqw;letter-spacing:0;text-transform:none}
+.note{font-size:.9cqw;line-height:1.5;font-style:italic;opacity:.75}
+
+/* ============ SALA 5 ============ */
+.cap{position:absolute}
+.cap .kicker{display:block;margin-bottom:.35cqw}
+.cap p{margin:0;font-size:1cqw;line-height:1.5;opacity:.85}
+
+/* ============ COMPARADOR ============ */
+.compare{position:absolute;inset:0;--x:50%}
+.compare .ly{position:absolute;inset:0}
+.compare .ly-b{clip-path:inset(0 0 0 var(--x));z-index:2}
+.compare .ly-b .slot:not(.filled){padding-left:calc(var(--x) + 1.5cqw)}
+.compare .ly-a .slot:not(.filled){padding-right:calc(100% - var(--x) + 1.5cqw)}
+.compare .bar{position:absolute;top:0;bottom:0;left:var(--x);width:0;z-index:8}
+.compare .bar::before{content:'';position:absolute;top:0;bottom:0;left:-.08cqw;width:.16cqw;background:#fff4d2;box-shadow:0 0 1cqw rgba(0,0,0,.6)}
+.compare .knob{position:absolute;top:50%;left:0;width:2.8cqw;height:2.8cqw;margin:-1.4cqw 0 0 -1.4cqw;border-radius:50%;
+  background:#fff4d2;color:#2a1f17;display:flex;align-items:center;justify-content:center;cursor:ew-resize;font:700 1cqw var(--sans);
+  box-shadow:0 .3cqw 1cqw rgba(0,0,0,.5);touch-action:none}
+
+/* ============ SALA 6 ============ */
+.soup{position:absolute;inset:0;width:100%;height:100%;mix-blend-mode:multiply;pointer-events:none}
+.ghost-slot:not(.filled){background:transparent !important;cursor:default}
+.ghost-slot:not(.filled)::before,.ghost-slot:not(.filled)>.lbl{display:none}
+.ghost-slot.drag{background:rgba(201,162,74,.25) !important}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:.8cqw}
+.chip{border-top:1px solid rgba(230,201,125,.55);padding-top:.6cqw}
+.chip b{display:block;font-family:var(--serif);font-size:1.35cqw;font-weight:600;color:var(--gold2);line-height:1.1;margin-bottom:.25cqw}
+.chip span{font-size:.8cqw;line-height:1.45;opacity:.8;display:block}
+.balance{position:absolute}
+.bal-q{font-family:var(--serif);font-size:1.75cqw;text-align:center;margin:0}
+.bal-grid{display:grid;grid-template-columns:1fr 15cqw 1fr;gap:1cqw;align-items:start;margin-top:.8cqw}
+.bal-col{display:flex;flex-direction:column;gap:.6cqw}
+.bal-col.r{text-align:right}
+.bal-btn{border:1px solid rgba(230,201,125,.6);background:transparent;color:var(--gold2);font:600 .7cqw var(--sans);letter-spacing:.18em;text-transform:uppercase;padding:.6cqw .8cqw;cursor:pointer;transition:background .3s}
+.bal-btn:hover{background:rgba(201,162,74,.15)}
+.arg{font-size:.88cqw;line-height:1.45;opacity:0;max-height:0;overflow:hidden;transition:opacity .7s,max-height .7s}
+.arg.on{opacity:.9;max-height:6cqw}
+#beam{transform-origin:100px 40px;transition:transform 1.2s cubic-bezier(.4,1.4,.5,1)}
+.pan{transition:transform 1.2s cubic-bezier(.4,1.4,.5,1)}
+.bal-quote{text-align:center;font-family:var(--serif);font-style:italic;font-size:1.3cqw;margin-top:.6cqw;opacity:0;transition:opacity 1s}
+.bal-quote.on{opacity:1}
+
+/* ============ SALA 7 ============ */
+.tabs{display:flex;gap:.5cqw}
+.tabs button{background:transparent;border:1px solid rgba(230,201,125,.4);color:var(--ivory);font:500 .8cqw var(--sans);letter-spacing:.12em;text-transform:uppercase;padding:.55cqw 1cqw;cursor:pointer;opacity:.65;transition:all .3s}
+.tabs button.on{opacity:1;background:rgba(201,162,74,.2);border-color:var(--gold2);color:var(--gold2)}
+.case{display:none}
+.case.on{display:block;animation:fadeIn .7s ease}
+.case h3{font-family:var(--serif);font-weight:500;font-size:2.4cqw;line-height:1.05;margin:0}
+.case .when{font:600 .74cqw var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);margin:.8cqw 0 1cqw}
+.case p{font-size:1.08cqw;line-height:1.6;font-weight:300;margin:0;opacity:.88}
+.cmp-set{display:none}.cmp-set.on{display:block}
+
+/* ============ SALA 8 ============ */
+.res{padding:.8cqw 1.1cqw;border-left:.2cqw solid #9a7630;background:rgba(255,250,240,.5);margin-bottom:.7cqw}
+.res .kicker{display:block;margin-bottom:.3cqw}
+.res p{margin:0;font-size:.98cqw;line-height:1.5}
+.res p i{font-family:var(--serif);font-size:1.2cqw}
+.love{margin-top:.8cqw !important;padding-top:.7cqw;border-top:1px solid rgba(154,118,48,.3);font-family:var(--serif);font-style:italic;font-size:1.08cqw !important;line-height:1.35 !important}
+.love svg{width:1cqw;height:.85cqw;color:#a8433a;vertical-align:-.05cqw;margin-right:.3cqw}
+.love b{color:#9a7630}
+.alegs{display:grid;grid-template-columns:repeat(3,1fr);gap:.6cqw;margin-top:.5cqw;color:#9a7630;text-align:center}
+.alegs svg{width:2.4cqw;height:1.9cqw;display:block;margin:0 auto .3cqw}
+.alegs b{display:block;font:600 .78cqw var(--serif);font-style:italic;color:var(--ink);font-size:1cqw}
+.alegs span{font-size:.72cqw;color:var(--ink);opacity:.7}
+.ana p{font-family:var(--serif);font-size:2.25cqw;line-height:1.28;margin:0 0 1.5cqw;font-weight:500}
+.ana p b{font-style:italic;font-weight:600;color:#9a7630}
+.ana .hint{font-size:.8cqw;letter-spacing:.2em;text-transform:uppercase;opacity:.4;font-family:var(--sans);transition:opacity .6s}
+
+/* ============ SALA 9 ============ */
+#dissolveCv{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+#s9img{transition:opacity 1.4s ease,filter 1.4s ease}
+#s9img.gone{opacity:0}
+#s9img.ghost{opacity:.62;filter:sepia(1) saturate(1.5) hue-rotate(-8deg) brightness(1.05) contrast(.9)}
+.big-line{font-family:var(--serif);font-size:2.3cqw;line-height:1.15;margin:0}
+.small-line{font-size:.95cqw;opacity:.65;margin-top:.6cqw;line-height:1.5}
+
+/* ============ SALA 10 ============ */
+.finale-bg{position:absolute;inset:0;background:url('img/bosco.jpg') center 30%/cover no-repeat;filter:saturate(.85) brightness(.55);transform:scale(1.08);animation:slowzoom 40s linear infinite alternate}
+@keyframes slowzoom{to{transform:scale(1.2) translateY(-2%)}}
+.finale-vig{position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(15,12,10,.35),rgba(15,12,10,.92) 85%)}
+.final1{font-family:var(--serif);font-size:2.6cqw;line-height:1.25;text-align:center;margin:0;color:var(--ivory);font-weight:500}
+.final2{font-family:var(--serif);font-style:italic;font-size:3.1cqw;line-height:1.2;text-align:center;margin:2cqw 0 0;color:var(--gold2)}
+.thanks{font:500 .85cqw var(--sans);letter-spacing:.35em;text-transform:uppercase;color:var(--ivory);opacity:.7;text-align:center}
+
+/* ============ DESTELLOS ============ */
+#sparkles{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:20}
+
+/* ============ HUD ============ */
+#hud{position:fixed;left:50%;bottom:2.2vh;transform:translateX(-50%);z-index:30;display:flex;gap:.6vh;align-items:center;
+  padding:.9vh 1.4vh;border-radius:3vh;background:rgba(18,15,13,.55);backdrop-filter:blur(8px);border:1px solid rgba(201,162,74,.25);transition:opacity .6s}
+#hud button{width:3.6vh;height:2.2vh;border:1px solid rgba(201,162,74,.45);background:transparent;color:var(--gold2);font:600 1.05vh var(--sans);cursor:pointer;border-radius:.3vh;padding:0;transition:all .3s}
+#hud button.on{background:var(--gold);color:#1b1410;border-color:var(--gold);width:5vh}
+#hud button.seen{background:rgba(201,162,74,.18)}
+#ctrl{position:fixed;right:3.4vw;bottom:2.2vh;z-index:30;display:flex;gap:.8vh;transition:opacity .6s}
+#ctrl>button,#ctrl>div>button.ib{width:4.4vh;height:4.4vh;border-radius:50%;border:1px solid rgba(201,162,74,.4);background:rgba(18,15,13,.6);backdrop-filter:blur(8px);color:var(--gold2);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+#ctrl svg{width:2vh;height:2vh}
+#ctrl button.off{opacity:.45}
+body.idle #hud, body.idle #ctrl, body.idle #timerChip{opacity:0;pointer-events:none}
+#timerChip{position:fixed;right:3.4vw;top:2.2vh;z-index:30;font:500 1.3vh var(--sans);letter-spacing:.15em;color:var(--gold2);background:rgba(18,15,13,.55);padding:.7vh 1.2vh;border-radius:2vh;border:1px solid rgba(201,162,74,.25);display:none;transition:opacity .6s}
+body.notes-on #timerChip{display:block}
+.pop{position:absolute;bottom:5.6vh;right:0;width:30vh;padding:1.6vh;background:rgba(22,18,16,.95);border:1px solid rgba(201,162,74,.35);border-radius:1vh;color:var(--ivory);font-size:1.3vh;display:none;box-shadow:0 1vh 3vh rgba(0,0,0,.5)}
+.pop.on{display:block}
+.pop h5{margin:0 0 1vh;font:600 1.05vh var(--sans);letter-spacing:.25em;text-transform:uppercase;color:var(--gold2)}
+.pop input[type=range]{width:100%;accent-color:var(--gold)}
+.pop .row{display:flex;gap:.8vh;margin-top:1.2vh;flex-wrap:wrap}
+.pop .row button{flex:1;border:1px solid rgba(201,162,74,.45);background:transparent;color:var(--gold2);padding:.8vh;border-radius:.5vh;cursor:pointer;font-size:1.15vh}
+.pop .row button.on{background:var(--gold);color:#1b1410}
+.pop p{margin:.8vh 0 0;opacity:.6;font-size:1.1vh;line-height:1.5}
+
+/* notas del orador */
+#notes{position:fixed;left:50%;bottom:7.5vh;transform:translate(-50%,2vh);width:min(70vw,110vh);z-index:31;padding:1.8vh 2.4vh;
+  background:rgba(14,12,11,.92);border:1px solid rgba(201,162,74,.35);border-radius:1vh;color:var(--ivory);opacity:0;pointer-events:none;transition:all .5s}
+body.notes-on #notes{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#notes .nh{display:flex;justify-content:space-between;font:600 1.1vh var(--sans);letter-spacing:.25em;text-transform:uppercase;color:var(--gold2);margin-bottom:.8vh}
+#notes p{margin:0;font-size:1.75vh;line-height:1.55;font-weight:300}
+#notesText{max-height:42vh;overflow:auto}
+
+/* modal remoto */
+.modal{position:fixed;inset:0;z-index:50;background:rgba(10,8,7,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center}
+.modal.on{display:flex}
+.modal .box{width:min(90vw,62vh);background:#1c1816;border:1px solid rgba(201,162,74,.4);border-radius:1.4vh;padding:3vh;color:var(--ivory);text-align:center}
+.modal h3{font-family:var(--serif);font-weight:500;font-size:3vh;margin:0 0 1vh}
+.modal p{font-size:1.5vh;line-height:1.6;opacity:.8;margin:.6vh 0}
+.modal #qr{background:#f5f0e6;display:inline-block;padding:1.4vh;border-radius:1vh;margin:1.6vh 0;min-height:10vh}
+.modal #qr svg{width:26vh;height:26vh;display:block}
+.modal code{font-size:1.4vh;word-break:break-all;color:var(--gold2)}
+.modal .close{margin-top:1.6vh;border:1px solid rgba(201,162,74,.5);background:transparent;color:var(--gold2);padding:1vh 2.4vh;border-radius:.6vh;cursor:pointer;font-size:1.4vh}
+.status{font-weight:600;color:var(--gold2)}
+
+/* pantalla negra (tecla B) */
+#black{position:fixed;inset:0;background:#000;z-index:60;opacity:0;pointer-events:none;transition:opacity .6s}
+#black.on{opacity:1;pointer-events:auto}
+
+/* ============ ENTRADA ============ */
+#intro{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:var(--ivory);
+  background:radial-gradient(ellipse 60% 55% at 50% 40%,#2e2723,#120f0e 80%);transition:opacity 1.4s ease}
+#intro.out{opacity:0;pointer-events:none}
+#intro .k{font:600 1.3vh var(--sans);letter-spacing:.5em;text-transform:uppercase;color:var(--gold)}
+#intro h1{font-family:var(--serif);font-weight:500;font-size:min(7vh,5.4vw);line-height:1.05;margin:2.4vh 0 1.6vh;max-width:80vw}
+#intro .sub{font-family:var(--serif);font-style:italic;font-size:2.4vh;opacity:.75}
+#enter{margin-top:5vh;padding:1.8vh 4.4vh;border:1px solid var(--gold);background:transparent;color:var(--gold2);font:600 1.4vh var(--sans);letter-spacing:.4em;text-transform:uppercase;cursor:pointer;transition:all .4s}
+#enter:hover{background:var(--gold);color:#1b1410}
+#breathe{margin-top:1.6vh;background:none;border:0;color:var(--ivory);opacity:.55;font:400 1.4vh var(--sans);letter-spacing:.12em;cursor:pointer;text-decoration:underline;text-underline-offset:.5vh}
+#breathe:hover{opacity:.9}
+#breath{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(18,15,14,.97);z-index:3}
+#breath.on{display:flex}
+#breath .bc{width:14vh;height:14vh;border-radius:50%;border:1px solid var(--gold);background:radial-gradient(circle,rgba(230,201,125,.35),rgba(230,201,125,.05));transition:transform 2s ease-in-out}
+#breath .bc.in{transform:scale(2)}
+#breath .bc.out{transform:scale(1);transition-duration:4s}
+#breath .bt{margin-top:9vh;font-family:var(--serif);font-size:4vh;color:var(--gold2)}
+#breath .bs{margin-top:1.5vh;font-size:1.4vh;opacity:.6;max-width:60vh}
+#intro .keys{margin-top:5vh;display:flex;gap:2.4vh;flex-wrap:wrap;justify-content:center;font-size:1.25vh;opacity:.55;letter-spacing:.05em}
+#intro kbd{font-family:var(--sans);border:1px solid rgba(230,201,125,.5);border-radius:.4vh;padding:.2vh .7vh;margin-right:.5vh;color:var(--gold2)}
+#intro .door{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:34vh;height:16vh;border:1px solid rgba(201,162,74,.25);border-bottom:0;border-radius:17vh 17vh 0 0;pointer-events:none}
+
+/* ============ MODO CONTROL REMOTO (teléfono) ============ */
+#remote{display:none}
+body.remote-mode #world,body.remote-mode #hud,body.remote-mode #ctrl,body.remote-mode #intro,body.remote-mode #notes,body.remote-mode #timerChip{display:none !important}
+body.remote-mode{overflow:auto}
+body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset:0;background:#171412;color:var(--ivory);padding:max(16px,env(safe-area-inset-top)) 16px max(16px,env(safe-area-inset-bottom))}
+#remote .rtop{display:flex;justify-content:space-between;align-items:center;font:600 12px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--gold2)}
+#remote h2{font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.1;margin:14px 0 4px}
+#remote .rstep{font-size:12px;opacity:.6;letter-spacing:.1em}
+#remote .rnotes{flex:1;overflow:auto;margin:14px 0;padding:12px;border:1px solid rgba(201,162,74,.3);border-radius:12px;font-size:18px;line-height:1.55;font-weight:300}
+#remote .rbtns button{height:16vh !important}
+#remote .rbtns{display:grid;grid-template-columns:1fr 2fr;gap:12px}
+#remote .rbtns button{height:22vh;border-radius:16px;border:1px solid rgba(201,162,74,.5);background:#231e1b;color:var(--gold2);font:600 18px var(--sans);letter-spacing:.15em;text-transform:uppercase}
+#remote .rbtns button.nx{background:var(--gold);color:#1b1410;border-color:var(--gold)}
+#remote .rbtns button:active{transform:scale(.97)}
+#remote .rmini{display:flex;gap:10px;margin-top:12px}
+#remote .rmini button{flex:1;padding:12px;border-radius:10px;border:1px solid rgba(201,162,74,.35);background:transparent;color:var(--gold2);font-size:13px}
+#remote .rstatus{font-size:12px;text-align:center;opacity:.7;margin-top:8px}
+</style>
+</head>
+<body>
+
+<!-- ===================== ENTRADA ===================== -->
+<div id="intro">
+  <div class="k">Taller de oratoria · Recorrido en 10 salas</div>
+  <h1>¿Qué destruimos cuando destruimos el arte?</h1>
+  <div class="sub">El arte como memoria, símbolo y expresión de la humanidad</div>
+  <button id="enter">Entrar al museo</button>
+  <button id="breathe">Respirar antes de empezar · 30 s</button>
+  <div id="breath"><div class="bc"></div><div class="bt" id="bt">Inhala</div><div class="bs">Respiración diafragmática · inhala en 2 tiempos, exhala en 4 con los labios fruncidos</div></div>
+  <div class="keys">
+    <span><kbd>→</kbd><kbd>Espacio</kbd>avanzar</span>
+    <span><kbd>←</kbd>retroceder</span>
+    <span><kbd>N</kbd>notas y cronómetro</span>
+    <span><kbd>M</kbd>música</span>
+    <span><kbd>F</kbd>pantalla completa</span>
+    <span><kbd>R</kbd>control con el celular</span>
+    <span><kbd>B</kbd>pantalla negra</span>
+    <span><kbd>C</kbd>créditos</span>
+  </div>
+  <div class="door"></div>
+</div>
+
+<div id="world"><div id="track">
+
+<!-- ===================== SALA I · PORTADA ===================== -->
+<section class="sala wall-dark" data-title="Vestíbulo">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala I</b><i>Vestíbulo</i></div>
+    <div class="abs" style="left:6cqw;top:12cqw;width:40cqw">
+      <div class="kicker">Taller de oratoria</div>
+      <h1 class="t" style="font-size:4.5cqw;margin-top:1.4cqw">¿Qué destruimos cuando destruimos <em>el arte</em>?</h1>
+      <p class="serif-line" style="opacity:.85">El arte como memoria, símbolo y expresión de la humanidad.</p>
+      <div class="rule"></div>
+      <div class="kicker" style="opacity:.8">Elaborado por</div>
+      <div class="cover-name" contenteditable="true" spellcheck="false" id="speakerName">Andrés Felipe Hernández Arango</div>
+    </div>
+    <div class="spot" style="left:46cqw;top:3cqw;width:53cqw;height:45cqw"></div>
+    <div class="lamp" style="left:66cqw;top:7.2cqw;width:9cqw"></div>
+    <div class="frame" style="left:50cqw;top:9cqw;width:43cqw;height:30.4cqw">
+      <div class="inner"><img class="art" src="img/atenas.jpg" alt="La escuela de Atenas, Rafael"></div>
+    </div>
+    <div class="cartela" style="left:50cqw;top:41.6cqw"><b>La escuela de Atenas</b>Rafael Sanzio · 1509–1511<br><span>Fresco · Estancias de Rafael, Vaticano</span></div>
+  </div>
+</section>
+
+<!-- ===================== SALA II · PREGUNTA ===================== -->
+<section class="sala wall-dark" data-title="La pregunta">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala II</b><i>La pregunta</i></div>
+    <div class="abs" style="left:6cqw;top:11cqw;width:36cqw">
+      <h2 class="t" style="font-size:3.8cqw">¿Es una obra de arte <em>solamente</em> un objeto?</h2>
+      <p class="lead">Piedra, pigmento, lienzo, bronce…</p>
+      <p class="serif-line">Y sin embargo, nadie llora por la piedra.<br><span class="gold">Lloramos por lo que significaba.</span></p>
+      <div class="switch">
+        <span class="lab on" id="labM">Materia</span>
+        <button id="swBtn" aria-label="Cambiar entre materia y significado"><i></i></button>
+        <span class="lab" id="labS">Significado</span>
+      </div>
+    </div>
+    <div class="spot" style="left:43cqw;top:2cqw;width:55cqw;height:46cqw"></div>
+    <div class="lamp" style="left:65cqw;top:6.2cqw;width:9cqw"></div>
+    <div class="frame" style="left:47cqw;top:8cqw;width:47cqw;height:33cqw">
+      <div class="inner">
+        <div class="slot" data-slot="monumento" data-label="[ESPACIO RESERVADO PARA IMAGEN DE UN MONUMENTO · PARTENÓN]"></div>
+        <div class="words" id="words">
+          <span class="m" style="left:6%;top:10%">mármol pentélico</span>
+          <span class="m" style="left:62%;top:16%">46 columnas</span>
+          <span class="m" style="left:12%;top:70%">piedra y pigmento</span>
+          <span class="m" style="left:60%;top:76%">siglo V a. C.</span>
+          <span class="s" style="left:8%;top:9%">memoria</span>
+          <span class="s" style="left:64%;top:14%">identidad</span>
+          <span class="s" style="left:38%;top:44%">fe</span>
+          <span class="s" style="left:10%;top:72%">duelo</span>
+          <span class="s" style="left:64%;top:76%">orgullo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SALA III · LENGUAJE ===================== -->
+<section class="sala wall-light" data-title="El lenguaje de las imágenes">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala III</b><i>El lenguaje de las imágenes</i></div>
+    <h2 class="t abs" style="left:6cqw;top:6.6cqw">Cuando las imágenes <em>hablan</em></h2>
+    <div class="spot" style="left:2cqw;top:8cqw;width:55cqw;height:42cqw"></div>
+    <div class="frame" style="left:6cqw;top:13.6cqw;width:47cqw;height:33.1cqw" id="athensFrame">
+      <div class="inner">
+        <img class="art" src="img/atenas.jpg" alt="La escuela de Atenas">
+        <button class="hs" style="left:48%;top:57%" data-i="0">1</button>
+        <button class="hs" style="left:53.5%;top:61%" data-i="1">2</button>
+        <button class="hs" style="left:22%;top:38%" data-i="2">3</button>
+        <button class="hs" style="left:77%;top:38%" data-i="3">4</button>
+        <button class="hs" style="left:41%;top:80%" data-i="4">5</button>
+        <button class="hs" style="left:50.5%;top:44%" data-i="5">6</button>
+      </div>
+    </div>
+    <div class="abs" style="left:57cqw;top:13.6cqw;width:37cqw">
+      <p class="lead" style="margin-top:0">El arte transmite ideas, emociones, creencias y críticas mediante <strong>símbolos, gestos, color y composición</strong>.</p>
+      <div class="concept"><span class="kicker">Alegoría</span><p>Una idea abstracta convertida en imagen concreta.</p></div>
+      <div class="info" id="athensInfo"></div>
+    </div>
+    <div class="cartela" style="left:57cqw;top:41.8cqw"><b>La escuela de Atenas</b>Rafael · 1509–1511 · <span>identificaciones tradicionales de los personajes</span></div>
+  </div>
+</section>
+
+<!-- ===================== SALA IV · ALEGORÍA (EL BOSCO) ===================== -->
+<section class="sala wall-light" data-title="Alegoría">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala IV</b><i>Alegoría</i></div>
+    <h2 class="t abs" style="left:6cqw;top:6.6cqw">El significado <em>oculto</em> detrás de una imagen</h2>
+    <div class="spot" style="left:0cqw;top:8cqw;width:44cqw;height:42cqw"></div>
+    <div class="frame" style="left:6cqw;top:13.4cqw;width:31.9cqw;height:34cqw">
+      <div class="inner" id="boschInner">
+        <img class="art" src="img/bosco.jpg" alt="El jardín de las delicias, El Bosco">
+        <div class="lens-box" id="lensBox"></div>
+        <button class="hs" data-i="0">1</button>
+        <button class="hs" data-i="1">2</button>
+        <button class="hs" data-i="2">3</button>
+        <button class="hs" data-i="3">4</button>
+        <button class="hs" data-i="4">5</button>
+        <button class="hs" data-i="5">6</button>
+      </div>
+    </div>
+    <div class="frame thin" style="left:41.5cqw;top:13.4cqw;width:22cqw;height:22cqw">
+      <div class="inner"><div class="lens" id="lens" style="inset:0;background-image:url('img/bosco.jpg')"></div></div>
+    </div>
+    <div class="caprow" style="left:41.5cqw;top:35.9cqw;width:22cqw;color:#9a7630"><span>Detalle ampliado</span><span></span></div>
+    <p class="note abs" style="left:41.5cqw;top:38.4cqw;width:22cqw;margin:0">El Bosco no dejó ninguna explicación escrita: lo que sigue son <b>lecturas posibles</b>, no certezas.</p>
+    <div class="abs" style="left:67cqw;top:13.4cqw;width:27cqw">
+      <div class="info" id="boschInfo" style="margin-top:0"></div>
+    </div>
+    <div class="cartela" style="left:67cqw;top:39.6cqw"><b>El jardín de las delicias</b>El Bosco · c. 1490–1510 · tabla central<br><span>Óleo sobre tabla · Museo del Prado, Madrid</span></div>
+  </div>
+</section>
+
+<!-- ===================== SALA V · MEMORIA ===================== -->
+<section class="sala wall-light" data-title="Memoria">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala V</b><i>Memoria</i></div>
+    <div class="abs" style="left:6cqw;top:6.6cqw;width:88cqw;display:flex;justify-content:space-between;align-items:flex-end;gap:4cqw">
+      <h2 class="t">El arte como <em>testigo</em> de la humanidad</h2>
+      <p class="serif-line" style="margin:0;max-width:36cqw;text-align:right;color:#6d5022">Cada obra perdida es una página arrancada de nuestra biografía colectiva.</p>
+    </div>
+    <div class="spot" style="left:2cqw;top:11cqw;width:34cqw;height:30cqw"></div>
+    <div class="spot" style="left:33cqw;top:11cqw;width:34cqw;height:30cqw"></div>
+    <div class="spot" style="left:64cqw;top:11cqw;width:34cqw;height:30cqw"></div>
+    <div class="frame" style="left:6cqw;top:16.5cqw;width:26cqw;height:19.5cqw"><div class="inner">
+      <div class="slot" data-slot="rupestre" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · ARTE RUPESTRE]"></div></div></div>
+    <div class="frame" style="left:37cqw;top:16.5cqw;width:26cqw;height:19.5cqw"><div class="inner">
+      <div class="slot" data-slot="monumento-historico" data-label="[ESPACIO RESERVADO PARA IMAGEN DE UN MONUMENTO]"></div></div></div>
+    <div class="frame" style="left:68cqw;top:16.5cqw;width:26cqw;height:19.5cqw"><div class="inner">
+      <div class="slot" data-slot="pintura-historica" data-label="[ESPACIO RESERVADO PARA IMAGEN DE LA OBRA · PINTURA HISTÓRICA]"></div></div></div>
+    <div class="cap" style="left:6cqw;top:38cqw;width:26cqw"><span class="kicker">Creencias · Altamira</span><p>Lo que temían, cazaban y veneraban quienes no dejaron escritura.</p></div>
+    <div class="cap" style="left:37cqw;top:38cqw;width:26cqw"><span class="kicker">Poder · Pirámide de Keops</span><p>Quién gobernaba y qué quería que fuera recordado.</p></div>
+    <div class="cap" style="left:68cqw;top:38cqw;width:26cqw"><span class="kicker">Acontecimientos · Goya, 1814</span><p>Un hecho fijado por la mirada de quien lo vivió.</p></div>
+  </div>
+</section>
+
+<!-- ===================== SALA VI · PROTESTA ===================== -->
+<section class="sala wall-dark" data-title="Protesta">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala VI</b><i>Protesta</i></div>
+    <div class="spot" style="left:0cqw;top:2cqw;width:42cqw;height:48cqw"></div>
+    <div class="lamp" style="left:16.5cqw;top:6.2cqw;width:9cqw"></div>
+    <div class="frame" style="left:6cqw;top:8cqw;width:30.3cqw;height:38cqw">
+      <div class="inner">
+        <div class="compare" id="cmpSun">
+          <div class="ly ly-a"><img class="art" src="img/girasoles.jpg" alt="Los girasoles, Van Gogh" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></div>
+          <div class="ly ly-b"><img class="art" src="img/girasoles.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            <svg class="soup" viewBox="0 0 100 127" preserveAspectRatio="none">
+              <defs>
+                <filter id="splat" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="3" seed="7"/><feDisplacementMap in="SourceGraphic" scale="7"/></filter>
+                <linearGradient id="soupG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f08a1c"/><stop offset=".6" stop-color="#e2650f"/><stop offset="1" stop-color="#c94a0a"/></linearGradient>
+                <radialGradient id="gloss" cx=".35" cy=".3" r=".6"><stop offset="0" stop-color="#fff3d0" stop-opacity=".55"/><stop offset="1" stop-color="#fff3d0" stop-opacity="0"/></radialGradient>
+              </defs>
+              <rect width="100" height="127" fill="#f39a1e" opacity=".42"/>
+              <g filter="url(#splat)" fill="url(#soupG)" opacity=".9">
+                <ellipse cx="62" cy="34" rx="30" ry="22"/><ellipse cx="78" cy="58" rx="20" ry="17"/><ellipse cx="48" cy="56" rx="16" ry="12"/>
+                <circle cx="30" cy="22" r="6"/><circle cx="90" cy="20" r="5"/><circle cx="22" cy="44" r="3.5"/><circle cx="95" cy="82" r="4"/><circle cx="40" cy="12" r="2.5"/>
+              </g>
+              <g fill="#d9590c" opacity=".88">
+                <rect x="45" y="58" width="2.6" height="38" rx="1.3"/><circle cx="46.3" cy="96" r="2.2"/>
+                <rect x="58" y="50" width="2" height="52" rx="1"/><circle cx="59" cy="102" r="1.8"/>
+                <rect x="70" y="70" width="3.2" height="30" rx="1.6"/><circle cx="71.6" cy="100" r="2.6"/>
+                <rect x="84" y="70" width="2.2" height="44" rx="1.1"/><circle cx="85.1" cy="114" r="2"/>
+                <rect x="93" y="78" width="1.6" height="22" rx=".8"/><circle cx="93.8" cy="100" r="1.4"/>
+                <rect x="52" y="64" width="1.4" height="20" rx=".7"/>
+              </g>
+              <ellipse cx="60" cy="30" rx="18" ry="11" fill="url(#gloss)"/>
+            </svg>
+            <div class="slot ghost-slot" data-slot="protesta" data-label="Foto real de la protesta (opcional)"></div></div>
+          <div class="bar"><div class="knob">⟷</div></div>
+        </div>
+              </div>
+    </div>
+    <div class="caprow" style="left:6cqw;top:46.9cqw;width:30.3cqw"><span><i>Los girasoles</i> · Van Gogh, 1888</span><span>14 · 10 · 2022 →</span></div>
+    <div class="abs" style="left:40.5cqw;top:7.6cqw;width:53.5cqw">
+      <h2 class="t">Cuando la protesta <em>alcanza</em> al arte</h2>
+      <div class="chips" style="margin-top:1.6cqw">
+        <div class="chip"><b>14 oct 2022</b><span>National Gallery, Londres</span></div>
+        <div class="chip"><b>Just Stop Oil</b><span>Dos activistas contra nuevas licencias de petróleo y gas</span></div>
+        <div class="chip"><b>Sopa de tomate</b><span>Lanzada sobre <i>Los girasoles</i>; luego se pegaron a la pared</span></div>
+        <div class="chip"><b>Un vidrio</b><span>La pintura quedó intacta; el marco, con daños menores</span></div>
+      </div>
+    </div>
+    <div class="balance" style="left:40.5cqw;top:24.4cqw;width:53.5cqw">
+      <p class="bal-q">¿Libertad de protesta o preservación del patrimonio?</p>
+      <div class="bal-grid">
+        <div class="bal-col">
+          <button class="bal-btn" data-side="L">Libertad de protesta</button>
+          <div class="arg" data-l="0">Puso la crisis climática en los titulares de todo el mundo.</div>
+          <div class="arg" data-l="1">La obra estaba protegida: el gesto buscaba un impacto simbólico, no material.</div>
+        </div>
+        <svg viewBox="0 0 200 120" style="width:15cqw;height:9cqw;overflow:visible">
+          <g fill="none" stroke="#e6c97d" stroke-width="1.6">
+            <path d="M100 40 V112 M78 112 H122"/>
+            <circle cx="100" cy="36" r="4" fill="#e6c97d"/>
+            <g id="beam">
+              <path d="M30 40 H170"/>
+              <g class="pan" id="panL"><path d="M30 40 L16 72 M30 40 L44 72"/><path d="M10 72 H50 Q30 86 10 72Z" fill="rgba(230,201,125,.18)"/></g>
+              <g class="pan" id="panR"><path d="M170 40 L156 72 M170 40 L184 72"/><path d="M150 72 H190 Q170 86 150 72Z" fill="rgba(230,201,125,.18)"/></g>
+            </g>
+          </g>
+        </svg>
+        <div class="bal-col r">
+          <button class="bal-btn" data-side="R">Patrimonio</button>
+          <div class="arg" data-r="0">Pone en riesgo bienes irremplazables y puede inspirar imitaciones.</div>
+          <div class="arg" data-r="1">El acto puede eclipsar la causa: se habla de la sopa, no del clima.</div>
+        </div>
+      </div>
+      <div class="bal-quote" id="balQuote">Los activistas preguntaron qué vale más, el arte o la vida. <span class="gold">¿Es un dilema real… o un falso dilema?</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SALA VII · GUERRA ===================== -->
+<section class="sala wall-dark" data-title="Guerra">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala VII</b><i>Guerra</i></div>
+    <h2 class="t abs" style="left:6cqw;top:6.6cqw">Cuando desaparece una parte de <em>nuestra historia</em></h2>
+    <div class="tabs abs" style="left:6cqw;top:13.2cqw" id="caseTabs">
+      <button class="on" data-c="0">Palmira · 2015</button>
+      <button data-c="1">Bamiyán · 2001</button>
+      <button data-c="2">Mostar · 1993</button>
+    </div>
+    <div class="spot" style="left:2cqw;top:12cqw;width:58cqw;height:38cqw"></div>
+    <div class="frame" style="left:6cqw;top:17.4cqw;width:50cqw;height:28.6cqw">
+      <div class="inner">
+        <div class="cmp-set on" data-c="0"><div class="compare">
+          <div class="ly ly-a"><div class="slot" data-slot="palmira-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · TEMPLO DE BEL, ANTES]"></div></div>
+          <div class="ly ly-b"><div class="slot" data-slot="palmira-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · DESPUÉS DE 2015]"></div></div>
+          <div class="bar"><div class="knob">⟷</div></div></div></div>
+        <div class="cmp-set" data-c="1"><div class="compare">
+          <div class="ly ly-a"><div class="slot" data-slot="bamiyan-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · BUDAS DE BAMIYÁN, ANTES]"></div></div>
+          <div class="ly ly-b"><div class="slot" data-slot="bamiyan-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · NICHOS VACÍOS, DESPUÉS DE 2001]"></div></div>
+          <div class="bar"><div class="knob">⟷</div></div></div></div>
+        <div class="cmp-set" data-c="2"><div class="compare">
+          <div class="ly ly-a"><div class="slot" data-slot="mostar-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · PUENTE VIEJO, 1993]"></div></div>
+          <div class="ly ly-b"><div class="slot" data-slot="mostar-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · PUENTE RECONSTRUIDO, 2004]"></div></div>
+          <div class="bar"><div class="knob">⟷</div></div></div></div>
+              </div>
+    </div>
+    <div class="caprow" style="left:6cqw;top:46.6cqw;width:50cqw"><span>← Antes</span><span>Después →</span></div>
+    <div class="abs" style="left:60cqw;top:17.4cqw;width:34cqw">
+      <div class="case on" data-c="0"><h3>Templo de Bel</h3><div class="when">Palmira, Siria · s. I d. C. → 2015</div>
+        <p>Resistió casi dos mil años de terremotos e imperios. En 2015 el Estado Islámico lo dinamitó para borrar un pasado que no encajaba en su relato.</p></div>
+      <div class="case" data-c="1"><h3>Budas de Bamiyán</h3><div class="when">Afganistán · s. VI → marzo de 2001</div>
+        <p>Dos colosos de 55 y 38 metros tallados en la roca. Los talibanes los dinamitaron; hoy quedan los nichos vacíos, como una ausencia con forma.</p></div>
+      <div class="case" data-c="2"><h3>Puente Viejo</h3><div class="when">Mostar, Bosnia · 1566 → 1993 → 2004</div>
+        <p>Unía dos orillas y dos comunidades. Fue derribado durante la guerra y reconstruido piedra a piedra once años después… <span class="gold">¿es el mismo puente?</span></p></div>
+      <p class="serif-line" style="margin-top:2.2cqw;border-top:1px solid rgba(230,201,125,.35);padding-top:1.2cqw">A veces la destrucción del patrimonio no es un daño colateral: <span class="gold">es el objetivo.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SALA VIII · PALABRAS ===================== -->
+<section class="sala wall-light" data-title="Palabras">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala VIII</b><i>Palabras</i></div>
+    <h2 class="t abs" style="left:6cqw;top:6.6cqw">El arte también se construye con <em>palabras</em></h2>
+    <div class="abs" style="left:6cqw;top:13.4cqw;width:29cqw">
+      <div class="res"><span class="kicker">Alegoría</span><p>Representación de una idea abstracta mediante una imagen concreta.</p>
+        <p style="margin-top:.6cqw"><i>La dama de la justicia:</i></p>
+        <div class="alegs">
+          <div><svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 4v24M12 28h16M6 8h28"/><path d="M6 8l-4 9h8zM34 8l-4 9h8z"/><path d="M2 17q4 3 8 0M30 17q4 3 8 0"/></svg><b>La balanza</b><span>equidad</span></div>
+          <div><svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 16q16-12 32 0q-16 12-32 0z"/><circle cx="20" cy="16" r="4"/><path d="M2 12h36v8H2z" fill="currentColor" fill-opacity=".85" stroke="none"/></svg><b>Los ojos vendados</b><span>imparcialidad</span></div>
+          <div><svg viewBox="0 0 40 32" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M20 2l3 4v16h-6V6z"/><path d="M12 22h16M20 22v6"/><circle cx="20" cy="29.5" r="1.5"/></svg><b>La espada</b><span>fuerza de la ley</span></div>
+        </div>
+        <p class="love"><svg viewBox="0 0 24 20" fill="currentColor"><path d="M12 19C4 13 2 9.5 2 6.5A4.5 4.5 0 0 1 12 4a4.5 4.5 0 0 1 10 2.5c0 3-2 6.5-10 12.5z"/></svg>
+          Y una de las alegorías más significativas de la vida: <b>el amor</b>, que no se ve, pero lo mueve todo.</p></div>
+      <div class="res"><span class="kicker">Metáfora</span><p><i>«El arte es la memoria que la humanidad decidió pintar.»</i></p></div>
+      <div class="res"><span class="kicker">Anáfora</span><p>Repetir el inicio de cada frase para dar ritmo y fuerza.</p></div>
+    </div>
+    <div class="spot" style="left:36cqw;top:6cqw;width:62cqw;height:44cqw"></div>
+    <div class="abs ana" style="left:39cqw;top:15.6cqw;width:55cqw">
+      <div class="kicker" style="margin-bottom:1.6cqw">Anáfora original</div>
+      <p data-step="1"><b>Pueden quemar</b> el lienzo, pero no la mirada que aprendió a ver en él.</p>
+      <p data-step="2"><b>Pueden derribar</b> el templo, pero no la fe que lo levantó piedra a piedra.</p>
+      <p data-step="3"><b>Pueden borrar</b> la imagen, pero no la memoria que ya la lleva por dentro.</p>
+      <div class="hint" id="anaHint">Avanza para recitar ↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SALA IX · REFLEXIÓN ===================== -->
+<section class="sala wall-dark" data-title="Reflexión">
+  <div class="tex"></div><div class="ceiling"></div><div class="floor"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala IX</b><i>Reflexión</i></div>
+    <h2 class="t abs" style="left:0;right:0;top:6.6cqw;text-align:center">¿Puede el arte <em>sobrevivir</em> a su destrucción?</h2>
+    <div class="spot" style="left:28cqw;top:8cqw;width:44cqw;height:42cqw"></div>
+    <div class="lamp" style="left:45.5cqw;top:11.2cqw;width:9cqw"></div>
+    <div class="frame" style="left:37.6cqw;top:13cqw;width:24.8cqw;height:31cqw" id="s9frame">
+      <div class="inner"><img class="art" id="s9img" src="img/girasoles.jpg" alt="Los girasoles"><canvas id="dissolveCv"></canvas></div>
+    </div>
+    <div class="abs" style="left:6cqw;top:22cqw;width:28cqw;text-align:right" data-step="1">
+      <p class="big-line">El soporte puede <em class="gold">desaparecer.</em></p>
+      <p class="small-line">El lienzo, la piedra, el pigmento.</p>
+    </div>
+    <div class="abs" style="left:66cqw;top:22cqw;width:28cqw" data-step="2">
+      <p class="big-line">El significado puede <em class="gold">persistir.</em></p>
+      <p class="small-line">En la memoria, en las copias, en quienes alguna vez la miraron.</p>
+    </div>
+    <p class="serif-line abs" style="left:0;right:0;top:45.4cqw;text-align:center;margin:0;font-size:1.55cqw" data-step="3">Pero no todo sobrevive: hay pérdidas que <span class="gold">ninguna memoria puede reparar.</span></p>
+  </div>
+</section>
+
+<!-- ===================== SALA X · CIERRE ===================== -->
+<section class="sala wall-dark" data-title="Salida">
+  <div class="finale-bg"></div><div class="finale-vig"></div>
+  <div class="stage">
+    <div class="plaque"><b>Sala X</b><i>Salida</i></div>
+    <div class="abs" style="left:12cqw;right:12cqw;top:15cqw">
+      <p class="final1" data-step="1">Podemos destruir un lienzo, derribar un monumento o borrar una imagen;</p>
+      <p class="final2" data-step="2">pero ¿podemos destruir aquello que el arte sembró en la memoria de la humanidad?</p>
+    </div>
+    <div class="abs thanks" style="left:0;right:0;top:46cqw" data-step="3">Gracias · <span id="thanksName">Andrés Felipe Hernández Arango</span></div>
+  </div>
+</section>
+
+</div></div>
+
+<canvas id="sparkles"></canvas>
+
+<!-- ===================== HUD ===================== -->
+<div id="hud"></div>
+<div id="timerChip">00:00</div>
+<div id="ctrl">
+  <div style="position:relative">
+    <button class="ib" id="musicBtn" title="Música (M)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
+    <div class="pop" id="musicPop">
+      <h5>Música de fondo</h5>
+      <input type="range" id="vol" min="0" max="100" value="35">
+      <div class="row">
+        <button id="mAmb" class="on">Ambiental</button>
+        <button id="mFile">Mi archivo…</button>
+        <button id="mOff">Silencio</button>
+      </div>
+      <p>«Ambiental» es una atmósfera generada en vivo: acordes lentos y campanas suaves, pensada para no competir con tu voz. Puedes cargar tu propio MP3, o en GitHub dejarlo en <b>audio/musica.mp3</b>.</p>
+      <input type="file" id="audioFile" accept="audio/*" hidden>
+    </div>
+  </div>
+  <button id="notesBtn" title="Notas del orador (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 6h16M4 12h16M4 18h10"/></svg></button>
+  <button id="remoteBtn" title="Controlar con el celular (R)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg></button>
+  <button id="fsBtn" title="Pantalla completa (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+</div>
+
+<div id="notes"><div class="nh"><span id="notesTitle">Sala I</span><span id="notesTime">00:00 · objetivo 7:00</span></div><div id="notesText" style="font-size:1.6vh;line-height:1.5;font-weight:300"></div></div>
+
+<div class="modal" id="remoteModal"><div class="box">
+  <h3>Control con el celular</h3>
+  <p id="remoteMsg">Conectando…</p>
+  <div id="qr"></div>
+  <p><code id="remoteUrl"></code></p>
+  <p>Estado: <span class="status" id="remoteStatus">esperando</span></p>
+  <button class="close" id="remoteClose">Cerrar</button>
+</div></div>
+
+<div class="modal" id="creditsModal"><div class="box" style="text-align:left;width:min(92vw,90vh)">
+  <h3 style="text-align:center">Créditos de las imágenes</h3>
+  <p style="text-align:center">Pinturas de dominio público y fotografías de Wikimedia Commons con licencias libres.</p>
+  <div id="creditsList" style="font-size:1.35vh;line-height:1.7;margin-top:1.4vh;max-height:52vh;overflow:auto"></div>
+  <div style="text-align:center"><button class="close" onclick="document.getElementById('creditsModal').classList.remove('on')">Cerrar</button></div>
+</div></div>
+<div id="black"></div>
+<input type="file" id="slotFile" accept="image/*" hidden>
+
+<!-- ===================== INTERFAZ DEL TELÉFONO ===================== -->
+<div id="remote">
+  <div class="rtop"><span id="rSala">Conectando…</span><span id="rTime">00:00</span></div>
+  <h2 id="rTitle">Control remoto</h2>
+  <div class="rstep" id="rStep"></div>
+  <div class="rnotes" id="rNotes">Abriendo conexión con la presentación…</div>
+  <div class="rbtns"><button id="rPrev">◀ Atrás</button><button class="nx" id="rNext">Siguiente ▶</button></div>
+  <div class="rmini"><button id="rMusic">♪ Música</button><button id="rBlack">Pantalla negra</button></div>
+  <div class="rstatus" id="rStatus"></div>
+</div>
+
+<script>
+/* =========================================================
+   CONTENIDO: títulos, notas del orador y pasos por sala
+   ========================================================= */
+const ROMAN=['I','II','III','IV','V','VI','VII','VIII','IX','X'];
+const SALAS=[
+ {steps:0,time:'0:30',mood:0,fase:'Introducción',
+  verbal:'Abre con la pregunta y no la respondas: «¿Qué destruimos cuando destruimos el arte?». Anuncia: «Hoy no les voy a mostrar diapositivas; vamos a recorrer juntos un museo de diez salas».',
+  vocal:'Voz pausada y firme. Pausa de 2 segundos justo después de la pregunta.',
+  visual:'De pie, centrado, peso en ambos pies. Recorre al público con la mirada antes de decir la primera palabra.'},
+ {steps:0,time:'0:40',mood:0,fase:'Introducción',
+  verbal:'Si una obra fuera solo un objeto, destruirla sería como romper una silla. Pero no reaccionamos igual. «Nadie llora por la piedra; lloramos por lo que significaba».',
+  vocal:'Baja el volumen en «nadie llora por la piedra» para crear cercanía.',
+  visual:'Activa el interruptor Materia → Significado señalando la imagen con la mano abierta.',
+  publico:'Saberes previos: «Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada».'},
+ {steps:0,time:'0:45',mood:0,fase:'Desarrollo',
+  verbal:'El arte es un lenguaje. Punto 1: Platón señala arriba. Punto 2: Aristóteles señala abajo. Dos filosofías sin una sola palabra. Define alegoría y cierra con el punto 6: la composición nos dice dónde mirar.',
+  vocal:'Enfatiza «sin una sola palabra».',
+  visual:'Imita los gestos: dedo hacia arriba (Platón), mano abierta hacia abajo (Aristóteles). El cuerpo también explica.'},
+ {steps:0,time:'0:50',mood:0,fase:'Desarrollo',
+  verbal:'El Bosco no explicó su obra: tenemos lecturas, no certezas. Recorre tres detalles (esfera de cristal, frutos, búho). Idea fuerza: una sola imagen puede contener todo un tratado moral.',
+  vocal:'Ritmo más lento al describir, tono de misterio.',
+  visual:'Acércate a la pantalla al señalar los detalles y vuelve al centro para decir la idea fuerza.',
+  publico:'Pregunta antes de revelar el punto 3: «¿Qué creen que significa una pareja dentro de una burbuja de cristal?». Escucha una respuesta.'},
+ {steps:0,time:'0:35',mood:0,fase:'Desarrollo',
+  verbal:'El arte es un documento involuntario: nadie lo pintó para que fuera historia, y sin embargo lo es. Sin el arte rupestre, ¿qué sabríamos de quienes no escribían? Remata con la metáfora de la página arrancada.',
+  vocal:'Di la metáfora despacio, separando las palabras.',
+  visual:'Barre con la mano las tres obras de izquierda a derecha, como una línea del tiempo.'},
+ {steps:0,time:'1:00',mood:1,fase:'Desarrollo',
+  verbal:'Primero los hechos, sin juzgar: 14 de octubre de 2022, National Gallery, Just Stop Oil, sopa de tomate, vidrio protector. Arrastra el deslizador. Luego la balanza: un argumento por lado y después el segundo.',
+  vocal:'Tono neutro e informativo en los datos; más intensidad en la pregunta final.',
+  visual:'Da un paso a la izquierda para una postura y a la derecha para la otra: el espacio muestra el debate. Señala la balanza: es, además, una alegoría de la justicia.',
+  publico:'Construcción colectiva: votación a mano alzada, ¿libertad de protesta o patrimonio? Comenta el resultado.'},
+ {steps:0,time:'0:50',mood:2,fase:'Desarrollo',
+  verbal:'De la protesta simbólica a la destrucción real: Palmira, Bamiyán, Mostar (cambia de pestaña). En Mostar: si se reconstruye, ¿es el mismo puente? Destruir el patrimonio es atacar la identidad de un pueblo.',
+  vocal:'Voz más grave y lenta. Silencio breve después de «es el objetivo».',
+  visual:'Quédate quieto: aquí la seriedad la da la quietud.'},
+ {steps:3,time:'0:50',mood:1,fase:'Desarrollo',
+  verbal:'«El discurso usa los mismos recursos que el arte». Alegoría: conecta con la Sala VI («¿recuerdan la balanza? Es la justicia hecha imagen») y con el amor, una de las alegorías más bellas: un corazón con alas. Luego recita la anáfora, una línea por cada clic.',
+  vocal:'Crescendo: cada línea un poco más fuerte que la anterior. Pausa antes de cada «pero no».',
+  visual:'Mira a una zona distinta del público en cada línea: izquierda, centro, derecha.'},
+ {steps:3,time:'0:40',mood:1,fase:'Conclusión',
+  verbal:'Clic: la pintura se deshace. Clic: el significado regresa como recuerdo dorado. Clic: matiza, no todo sobrevive; hay pérdidas irreparables.',
+  vocal:'Dos o tres segundos de silencio total mientras la pintura se deshace.',
+  visual:'Gírate hacia la pintura mientras desaparece y vuelve al público para hablar.'},
+ {steps:3,time:'0:30',mood:0,fase:'Conclusión',
+  verbal:'Primera línea y pausa larga. Segunda línea mirando al público: es un llamado a la reflexión. Silencio. «Gracias».',
+  vocal:'Lo más lento de todo el discurso. Termina con tono descendente y firme.',
+  visual:'Da un paso al frente para la pregunta final y sostén la mirada tres segundos antes de agradecer.'}
+];
+const SPEECH=[
+ ['Buenos días. Quiero empezar con una pregunta, y les pido que todavía no la respondan: ¿qué destruimos cuando destruimos el arte? [pausa] Hoy no les voy a mostrar diapositivas. Los invito a caminar conmigo por un museo de diez salas. Al final del recorrido volveremos a esta pregunta… y veremos si sigue teniendo la misma respuesta.'],
+ ['Empecemos por lo más simple. ¿Qué es una obra de arte? Si la miramos como objeto, es piedra, pigmento, lienzo, bronce: materia. [activa el interruptor] Pero si fuera solo eso, destruir una escultura sería como romper una silla, y no reaccionamos igual. Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada. [pausa] ¿Qué sintieron? Porque nadie llora por la piedra. Lloramos por lo que significaba: memoria, identidad, fe, orgullo.'],
+ ['Y es que el arte es un lenguaje. Miren La escuela de Atenas, de Rafael. En el centro, Platón señala hacia arriba: el mundo de las ideas. A su lado, Aristóteles extiende la mano hacia la tierra: el conocimiento que nace de lo que percibimos. Dos filosofías completas… sin una sola palabra. Eso es una alegoría: una idea abstracta convertida en imagen. Y fíjense en la arquitectura: todas las líneas convergen en ellos dos. Rafael no solo pintó personas; nos dijo dónde mirar.'],
+ ['Ahora, El jardín de las delicias, de El Bosco, pintado hace más de quinientos años. El Bosco nunca explicó su obra, así que lo que tenemos son lecturas, no certezas. Les pregunto: ¿qué creen que significa una pareja encerrada en una burbuja de cristal? [escucha una respuesta] Un proverbio flamenco decía: «la dicha es como el vidrio, pronto se rompe». Y están los frutos gigantes, dulces pero efímeros, y el búho, que podía ser sabiduría… o pecado. Una sola pintura puede contener todo un tratado sobre el placer, el deseo y la moral de una época.'],
+ ['Por eso el arte también es un testigo. Nadie pintó las cuevas hace miles de años para que fueran un libro de historia, y sin embargo lo son: nos cuentan qué temían, qué cazaban y qué veneraban personas que nunca escribieron. Los monumentos nos dicen quién gobernaba; las pinturas, cómo se vivió un acontecimiento. Cada obra perdida es una página arrancada de nuestra biografía colectiva.'],
+ ['Ahora, una escena real. El 14 de octubre de 2022, en la National Gallery de Londres, dos activistas de Just Stop Oil lanzaron sopa de tomate sobre Los girasoles de Van Gogh y luego se pegaron a la pared. Protestaban contra nuevos proyectos de petróleo y gas. [mueve el deslizador] La pintura estaba protegida por un vidrio: quedó intacta y el marco sufrió daños menores. ¿Fue legítimo? Pongámoslo en una balanza que, por cierto, es la alegoría de la justicia. [pulsa «Libertad de protesta»] De un lado, la libertad de protesta: el gesto puso la crisis climática en los titulares del mundo y la obra no corrió un peligro real. [pulsa «Patrimonio»] Del otro, el patrimonio: se arriesgan bienes irremplazables, y el acto puede eclipsar la causa; terminamos hablando de la sopa y no del clima. Votemos: levanten la mano quienes ponen más peso en la protesta… ¿y en el patrimonio? Los activistas preguntaron qué vale más, el arte o la vida. Yo les dejo otra pregunta: ¿es un dilema real… o un falso dilema?'],
+ ['Pero hay casos en los que no hay vidrio que proteja. En 2015, el Estado Islámico dinamitó el Templo de Bel, en Palmira, Siria, que había resistido casi dos mil años. [pestaña Bamiyán] En 2001, los talibanes destruyeron los Budas de Bamiyán, en Afganistán; hoy solo quedan los nichos vacíos. [pestaña Mostar] Y en 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar. Se reconstruyó en 2004, piedra a piedra… pero ¿es el mismo puente? En la guerra, destruir el patrimonio de un pueblo es atacar su memoria y su identidad. A veces no es un daño colateral. [pausa] Es el objetivo.'],
+ ['Así como el arte construye con imágenes, nosotros construimos con palabras. Una alegoría es una idea abstracta hecha imagen. Piensen en la dama de la justicia: sostiene una balanza, que es la equidad; tiene los ojos vendados, porque juzga sin mirar a quién; y empuña una espada, que es la fuerza de la ley. Y quizá la alegoría más significativa de la vida sea el amor: algo que no se ve y, sin embargo, lo mueve todo. Escuchen:',
+  '«Pueden quemar el lienzo, pero no la mirada que aprendió a ver en él.»',
+  '«Pueden derribar el templo, pero no la fe que lo levantó piedra a piedra.»',
+  '«Pueden borrar la imagen… pero no la memoria que ya la lleva por dentro.»'],
+ ['Entonces, ¿puede el arte sobrevivir a su destrucción?',
+  '[silencio mientras se deshace] El soporte puede desaparecer: el lienzo, la piedra, el pigmento.',
+  'Pero el significado puede persistir: en la memoria, en las copias, en quienes alguna vez la miraron. Ustedes seguirían reconociendo Los girasoles aunque ya no existieran.',
+  'Sin embargo, no seamos ingenuos: no todo sobrevive. Hay pérdidas que ninguna memoria puede reparar. Por eso cuidar el arte no es un lujo: es cuidar quiénes somos.'],
+ ['[pausa] Volvamos a la pregunta del inicio.',
+  'Podemos destruir un lienzo, derribar un monumento o borrar una imagen…',
+  'pero ¿podemos destruir aquello que el arte sembró en la memoria de la humanidad?',
+  '[silencio de tres segundos] Muchas gracias.']
+];
+SALAS.forEach((S,i)=>S.speech=SPEECH[i]);
+const toSec=t=>{const[a,b]=t.split(':');return +a*60+ +b;};
+let acc=0; SALAS.forEach(S=>{acc+=toSec(S.time);S.planEnd=acc;});
+function notesHTML(S,step,full){
+  const row=(k,v)=>v?'<div style="margin:.3em 0;font-size:.82em;opacity:.85"><b style="color:#e6c97d;font-weight:600;letter-spacing:.12em;font-size:.8em">'+k+'</b>&nbsp; '+v+'</div>':'';
+  const k=Math.min(step||0,S.speech.length-1);
+  const fmtTxt=t=>t.replace(/\[([^\]]+)\]/g,'<span style="color:#e6c97d;font-style:italic;font-size:.85em">[$1]</span>');
+  let sp='';
+  if(full){ sp=S.speech.map((t,j)=>'<p data-k="'+j+'" style="margin:0 0 .7em;padding:.5em .7em;border-radius:8px;transition:all .3s;'+(j===k?'background:rgba(201,162,74,.16);border-left:3px solid #e6c97d;opacity:1':'opacity:.45;border-left:3px solid transparent')+'">'+fmtTxt(t)+'</p>').join(''); }
+  else sp='<p style="margin:0 0 .6em;font-size:1.08em;line-height:1.5">'+fmtTxt(S.speech[k])+'</p>';
+  return '<div style="font:600 .7em Inter,sans-serif;letter-spacing:.25em;color:#e6c97d;margin-bottom:.4em">GUION</div>'+sp+row('VOCAL',S.vocal)+row('VISUAL',S.visual)+row('PÚBLICO',S.publico);
+}
+function notesText(S){return 'VERBAL: '+S.verbal+'\nVOCAL: '+S.vocal+'\nVISUAL: '+S.visual+(S.publico?'\nPÚBLICO: '+S.publico:'');}
+
+/* =========================================================
+   MODO TELÉFONO (control remoto) — se activa con ?remote=ID
+   ========================================================= */
+const params=new URLSearchParams(location.search);
+const REMOTE_ID=params.get('remote');
+function loadOne(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>{s.remove();rej(new Error('No se pudo cargar '+src));};document.head.appendChild(s);});}
+async function loadScript(list){let err;for(const src of list){try{await loadOne(src);return;}catch(e){err=e;}}throw err;}
+const PEER_SRC=['js/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
+const QR_SRC=['js/qrcode.js','https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js'];
+
+if(REMOTE_ID){
+  document.body.classList.add('remote-mode');
+  const $=id=>document.getElementById(id);
+  const titles=[...document.querySelectorAll('.sala')].map(x=>x.dataset.title);
+  let conn=null, li=0, ls=0, connected=false;
+  function render(i,step,time,col){
+    const S=SALAS[i];
+    $('rSala').textContent=S.fase+' · Sala '+ROMAN[i]+' / X';
+    $('rTitle').textContent=titles[i];
+    $('rStep').textContent=(S.steps?('Paso '+step+' de '+S.steps+' · '):'')+'tiempo sugerido '+S.time+(connected?'':' · modo sin conexión');
+    $('rNotes').innerHTML=notesHTML(S,step,true);
+    const cur=$('rNotes').querySelector('p[data-k="'+Math.min(step,S.speech.length-1)+'"]');
+    if(cur) cur.scrollIntoView({block:'center',behavior:'smooth'});
+    if(time){$('rTime').textContent=time; if(col)$('rTime').style.color=col;}
+  }
+  function localMove(d){ // navegar el guion en el celular aunque no haya conexión
+    const S=SALAS[li];
+    if(d>0){ if(ls<S.steps)ls++; else if(li<9){li++;ls=0;} }
+    else { if(ls>0)ls--; else if(li>0){li--;ls=SALAS[li].steps;} }
+    render(li,ls);
+  }
+  const send=(cmd)=>{ if(navigator.vibrate)navigator.vibrate(18);
+    if(conn&&conn.open){conn.send({type:'cmd',cmd});} else if(cmd==='next'||cmd==='prev'){localMove(cmd==='next'?1:-1);} };
+  $('rNext').onclick=()=>send('next'); $('rPrev').onclick=()=>send('prev');
+  $('rMusic').onclick=()=>send('music'); $('rBlack').onclick=()=>send('black');
+  render(0,0);
+  (async()=>{
+    try{
+      if(typeof RTCPeerConnection==='undefined') throw new Error('Este navegador no permite WebRTC');
+      await loadScript(PEER_SRC);
+      const peer=new Peer();
+      peer.on('open',()=>{
+        $('rStatus').textContent='Buscando la presentación…';
+        conn=peer.connect(REMOTE_ID,{reliable:true});
+        conn.on('open',()=>{connected=true;$('rStatus').textContent='Conectado ✓';conn.send({type:'hello'});});
+        conn.on('data',d=>{ if(d&&d.type==='state'){ li=d.i; ls=d.step; render(d.i,d.step,d.time,d.pace&&d.pace.col);} });
+        conn.on('close',()=>{connected=false;$('rStatus').textContent='Conexión cerrada: puedes seguir leyendo el guion aquí. Recarga para reconectar.';});
+      });
+      peer.on('error',e=>{$('rStatus').textContent='Sin conexión ('+(e.type||'error')+'): el guion sigue disponible con los botones.';});
+    }catch(e){ $('rStatus').textContent='Sin conexión: el guion sigue disponible con los botones.'; }
+  })();
+}
+
+/* =========================================================
+   PRESENTACIÓN
+   ========================================================= */
+if(!REMOTE_ID){
+const $=id=>document.getElementById(id);
+const salas=[...document.querySelectorAll('.sala')];
+const track=$('track'), world=$('world');
+let cur=0, revealed=salas.map(()=>0), t0=null, entered=false;
+
+/* ---------- HUD (mapa de salas) ---------- */
+const hud=$('hud');
+salas.forEach((s,i)=>{const b=document.createElement('button');b.textContent=ROMAN[i];b.title='Sala '+ROMAN[i]+' · '+s.dataset.title;b.onclick=()=>go(i);hud.appendChild(b);});
+function paintHud(){[...hud.children].forEach((b,i)=>{b.classList.toggle('on',i===cur);b.classList.toggle('seen',i<cur);});}
+
+/* ---------- navegación ---------- */
+function applySteps(i){
+  const n=revealed[i];
+  salas[i].querySelectorAll('[data-step]').forEach(el=>el.classList.toggle('on',+el.dataset.step<=n));
+  if(i===7) $('anaHint').style.opacity=n>=3?0:.4;
+  if(i===8) dissolve.setState(n);
+}
+function go(i,fromPrev){
+  i=Math.max(0,Math.min(salas.length-1,i));
+  if(i===cur && entered && track.style.transform){ return; }
+  const dist=Math.abs(i-cur);
+  if(fromPrev) revealed[i]=SALAS[i].steps; else if(i>cur) revealed[i]=0;
+  cur=i;
+  track.style.transitionDuration=(dist>2?2.2:1.6)+'s';
+  track.style.transform='translateX('+(-i*100)+'vw)';
+  if(entered && dist>0){ world.classList.remove('walking'); void world.offsetWidth; world.classList.add('walking'); audio.steps(); }
+  applySteps(i); paintHud(); updateNotes(); audio.mood(SALAS[i].mood);
+  try{ history.replaceState(null,'','#sala-'+(i+1)); }catch(e){}
+  pushState();
+}
+function next(){ if(revealed[cur]<SALAS[cur].steps){revealed[cur]++;applySteps(cur);updateNotes();pushState();} else if(cur<salas.length-1) go(cur+1); }
+function prev(){ if(revealed[cur]>0){revealed[cur]--;applySteps(cur);updateNotes();pushState();} else if(cur>0) go(cur-1,true); }
+world.addEventListener('animationend',()=>world.classList.remove('walking'));
+
+/* ---------- teclado / clicker / swipe ---------- */
+document.addEventListener('keydown',e=>{
+  if(e.target.isContentEditable||e.target.tagName==='INPUT')return;
+  const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault(); if(!entered)enter(); else next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
+  else if(k==='Home')go(0); else if(k==='End')go(salas.length-1);
+  else if(k==='n'||k==='N')toggleNotes();
+  else if(k==='m'||k==='M')audio.toggle();
+  else if(k==='f'||k==='F')toggleFS();
+  else if(k==='r'||k==='R')openRemote();
+  else if(k==='b'||k==='B'||k==='.')$('black').classList.toggle('on');
+  else if(k==='c'||k==='C')openCredits();
+  else if(k==='Escape'){$('remoteModal').classList.remove('on');$('musicPop').classList.remove('on');}
+  else if(/^[0-9]$/.test(k)){go(k==='0'?9:+k-1);}
+  wake();
+});
+let tx=null;
+world.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+world.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>60)(dx<0?next:prev)();tx=null;});
+
+/* ---------- ocultar controles en reposo ---------- */
+let idleT;
+function wake(){document.body.classList.remove('idle');clearTimeout(idleT);idleT=setTimeout(()=>{if(!$('musicPop').classList.contains('on'))document.body.classList.add('idle');},2600);}
+document.addEventListener('mousemove',wake);
+
+/* ---------- entrada ---------- */
+function enter(){
+  if(entered)return; entered=true; t0=Date.now();
+  $('intro').classList.add('out'); audio.start();
+  const m=location.hash.match(/^#sala-(\d+)$/); const start=m?Math.min(10,Math.max(1,+m[1]))-1:0;
+  track.style.transition='none'; cur=start; track.style.transform='translateX('+(-start*100)+'vw)'; void track.offsetWidth; track.style.transition='';
+  applySteps(cur); paintHud(); updateNotes(); pushState(); wake();
+}
+$('enter').onclick=()=>{enter(); toggleFS(true);};
+$('breathe').onclick=()=>{const b=$('breath'),c=b.querySelector('.bc'),t=$('bt');b.classList.add('on');let n=0;
+  const cyc=()=>{if(n++>=5){b.classList.remove('on');return;} c.className='bc in';t.textContent='Inhala… 1, 2';
+    setTimeout(()=>{c.className='bc out';t.textContent='Exhala… 1, 2, 3, 4';},2000); setTimeout(cyc,6000);}; cyc();
+  b.onclick=()=>{n=99;b.classList.remove('on');};};
+paintHud(); applySteps(0);
+
+/* ---------- pantalla completa ---------- */
+function toggleFS(onlyEnter){
+  try{ if(!document.fullscreenElement){document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen().catch(()=>{});}
+       else if(onlyEnter!==true){document.exitFullscreen();} }catch(e){}
+}
+$('fsBtn').onclick=()=>toggleFS();
+
+/* ---------- notas + cronómetro ---------- */
+function fmt(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function elapsed(){return t0?fmt(Date.now()-t0):'00:00';}
+function updateNotes(){
+  const S=SALAS[cur];
+  $('notesTitle').textContent=S.fase+' · Sala '+ROMAN[cur]+' · '+salas[cur].dataset.title+' · '+S.time+(S.steps?' · paso '+revealed[cur]+'/'+S.steps:'');
+  $('notesText').innerHTML=notesHTML(S,revealed[cur],false);
+}
+function toggleNotes(){document.body.classList.toggle('notes-on');}
+$('notesBtn').onclick=toggleNotes;
+function paceInfo(){const el=t0?(Date.now()-t0)/1000:0, plan=SALAS[cur].planEnd, d=el-plan;
+  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 7:10 (máx. 8:00)',col,el};}
+setInterval(()=>{const p=paceInfo();$('notesTime').textContent=p.txt;$('notesTime').style.color=p.col;$('timerChip').textContent=fmt(p.el*1000);$('timerChip').style.color=p.col;},500);
+setInterval(()=>pushState(),2000);
+
+/* ---------- nombre editable ---------- */
+const nameEl=$('speakerName');
+try{const sv=localStorage.getItem('museo-nombre');if(sv){nameEl.textContent=sv;}}catch(e){}
+$('thanksName').textContent=nameEl.textContent;
+nameEl.addEventListener('input',()=>{$('thanksName').textContent=nameEl.textContent;try{localStorage.setItem('museo-nombre',nameEl.textContent);}catch(e){}});
+
+/* =========================================================
+   ESPACIOS PARA IMAGEN (clic / arrastrar / carpeta img/obras)
+   ========================================================= */
+const ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg>';
+const DB={
+  db:null,
+  open(){if(this.db)return Promise.resolve(this.db);return new Promise((res,rej)=>{try{const r=indexedDB.open('museo-arte',1);r.onupgradeneeded=()=>r.result.createObjectStore('slots');r.onsuccess=()=>{this.db=r.result;res(this.db)};r.onerror=()=>rej(r.error);}catch(e){rej(e)}});},
+  async get(k){try{const db=await this.open();return await new Promise(r=>{const q=db.transaction('slots').objectStore('slots').get(k);q.onsuccess=()=>r(q.result);q.onerror=()=>r(null);});}catch(e){return null}},
+  async set(k,v){try{const db=await this.open();db.transaction('slots','readwrite').objectStore('slots').put(v,k);}catch(e){}},
+  async del(k){try{const db=await this.open();db.transaction('slots','readwrite').objectStore('slots').delete(k);}catch(e){}}
+};
+let pendingSlot=null;
+/* Imágenes por defecto: Wikimedia Commons (licencias libres). Se cargan en GitHub Pages o al abrir con internet. */
+const COMMONS=f=>'https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(f)+'?width=1400';
+const DEFAULTS={
+ 'monumento':['The_Parthenon_in_Athens.jpg','Partenón, Atenas (1978) · Steve Swayne · CC BY 2.0'],
+ 'rupestre':['Altamira,_bison.jpg','Bisonte de Altamira (reproducción) · Dominio público'],
+ 'monumento-historico':['Kheops-Pyramid.jpg','Pirámide de Keops · Nina Aldin Thune · CC BY-SA 3.0'],
+ 'pintura-historica':['El_Tres_de_Mayo,_by_Francisco_de_Goya,_from_Prado_(cropped).jpg','El tres de mayo de 1808, Francisco de Goya (1814), Museo del Prado · Dominio público'],
+ 'palmira-antes':['Temple_of_Bel,_Palmyra_02.jpg','Templo de Bel, Palmira (2010) · Bernard Gagnon · CC BY-SA'],
+ 'palmira-despues':['Palmyra_after_freedom_(4).jpg','Palmira, marzo de 2016 · Jawad Shaar (Tasnim News) · ver licencia en Commons'],
+ 'bamiyan-antes':['Bamiyan,_the_rockwall_with_the_statues_of_Buddha_in_1977_before_the_great_loss._-_panoramio.jpg','Budas de Bamiyán en 1977 · Paul Dober · CC BY 3.0'],
+ 'bamiyan-despues':['Bamyan_Valley_in_2012.jpg','Nicho vacío del Buda mayor (2012) · Sgt. Ken Scar, U.S. Army · Dominio público'],
+ 'mostar-antes':['Le_Vieux_Pont_de_Mostar_(4).jpg','Puente Viejo de Mostar en 1974 · Jpbazard · ver licencia en Commons'],
+ 'mostar-despues':['Stari_Most_(Old_Bridge)_Mostar.jpg','Puente Viejo reconstruido (2019) · Djani Behram · ver licencia en Commons']
+};
+function fillSlot(slot,src){
+  slot.classList.add('filled');
+  let img=slot.querySelector('img'); if(!img){img=document.createElement('img');slot.appendChild(img);}
+  img.src=src;
+}
+function clearSlot(slot){slot.classList.remove('filled');const img=slot.querySelector('img');if(img)img.remove();DB.del(slot.dataset.slot);}
+function probe(url){return new Promise(r=>{const i=new Image();i.onload=()=>r(url);i.onerror=()=>r(null);i.src=url;});}
+document.querySelectorAll('.slot').forEach(async slot=>{
+  slot.innerHTML='<div class="lbl">'+ICON+'<div>'+slot.dataset.label+'<small>Haz clic o arrastra una imagen aquí</small></div></div>'+
+    '<div class="chg"><button data-a="c">Cambiar</button><button data-a="x">Quitar</button></div>';
+  slot.addEventListener('click',e=>{
+    const a=e.target.dataset&&e.target.dataset.a;
+    if(a==='x'){e.stopPropagation();clearSlot(slot);return;}
+    if(a==='c'||(!slot.classList.contains('filled')&&!slot.classList.contains('ghost-slot'))){e.stopPropagation();pendingSlot=slot;$('slotFile').click();}
+  });
+  slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('drag');});
+  slot.addEventListener('dragleave',()=>slot.classList.remove('drag'));
+  slot.addEventListener('drop',e=>{e.preventDefault();slot.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){fillSlot(slot,URL.createObjectURL(f));DB.set(slot.dataset.slot,f);}});
+  // 1) imagen guardada en este navegador  2) archivo en img/obras/<nombre>.jpg|png|webp
+  const blob=await DB.get(slot.dataset.slot);
+  if(blob){fillSlot(slot,URL.createObjectURL(blob));return;}
+  for(const ext of ['jpg','jpeg','png','webp']){const u=await probe('img/obras/'+slot.dataset.slot+'.'+ext);if(u){fillSlot(slot,u);return;}}
+  const d=DEFAULTS[slot.dataset.slot];
+  if(d){const u=await probe(COMMONS(d[0])); if(u){fillSlot(slot,u); const im=slot.querySelector('img'); if(im)im.alt=d[1];}}
+});
+$('slotFile').addEventListener('change',e=>{const f=e.target.files[0];if(f&&pendingSlot){fillSlot(pendingSlot,URL.createObjectURL(f));DB.set(pendingSlot.dataset.slot,f);}e.target.value='';});
+
+/* =========================================================
+   SALA II · interruptor materia / significado
+   ========================================================= */
+$('swBtn').onclick=()=>{const on=$('swBtn').classList.toggle('on');$('words').classList.toggle('sig',on);$('labM').classList.toggle('on',!on);$('labS').classList.toggle('on',on);};
+
+/* =========================================================
+   SALA III · La escuela de Atenas (puntos)
+   ========================================================= */
+const ATHENS=[
+ ['Platón','Señala hacia arriba: el mundo de las ideas, lo eterno y perfecto. Lleva el Timeo bajo el brazo.'],
+ ['Aristóteles','Extiende la mano hacia la tierra: el conocimiento nace de lo que percibimos. Sostiene su Ética.'],
+ ['Apolo','Dios de las artes y la armonía, con su lira. Preside el lado de la poesía y la intuición.'],
+ ['Atenea','Diosa de la sabiduría y la razón, con lanza y escudo. Preside el lado del pensamiento racional.'],
+ ['Heráclito','Solitario, apoyado en un bloque de mármol. La tradición dice que Rafael le dio el rostro de Miguel Ángel.'],
+ ['La perspectiva','Todas las líneas de la arquitectura convergen entre los dos filósofos: la composición nos dice dónde mirar.']
+];
+function hotspots(innerSel,data,infoId,onPick){
+  const inner=document.querySelector(innerSel), info=$(infoId);
+  const btns=[...inner.querySelectorAll('.hs')];
+  function pick(i){btns.forEach((b,j)=>b.classList.toggle('on',j===i));
+    info.innerHTML='<div class="fade"><span class="num">'+(i+1)+'</span><h4>'+data[i][0]+'</h4><p>'+data[i][1]+'</p></div>'; if(onPick)onPick(i);}
+  btns.forEach((b,i)=>b.addEventListener('click',e=>{e.stopPropagation();pick(i);}));
+  pick(0);
+}
+hotspots('#athensFrame .inner',ATHENS,'athensInfo');
+
+/* =========================================================
+   SALA IV · El jardín de las delicias (lupa)
+   ========================================================= */
+const BOSCH=[
+ {x:.50,y:.215,z:4.2,t:'Fuentes y torres fantásticas',d:'Arquitecturas imposibles, mitad mineral y mitad vegetal: un paraíso artificial, bello y extraño a la vez.'},
+ {x:.50,y:.43,z:3.4,t:'La cabalgata del deseo',d:'Jinetes sobre todo tipo de animales giran sin fin alrededor de un estanque de mujeres: el deseo como un ciclo que no se detiene.'},
+ {x:.133,y:.69,z:4.4,t:'La esfera de cristal',d:'Una pareja dentro de una burbuja frágil. Un proverbio flamenco decía: «la dicha es como el vidrio, pronto se rompe».'},
+ {x:.387,y:.62,z:4.4,t:'Frutos gigantes',d:'Frutos y bayas enormes, de los que asoman cabezas humanas: placeres dulces pero efímeros, que se pudren pronto.'},
+ {x:.32,y:.72,z:4.2,t:'El mejillón',d:'Una pareja encerrada en una concha: el placer que encierra y aísla.'},
+ {x:.893,y:.65,z:4.6,t:'El búho',d:'En la iconografía de la época podía aludir a la sabiduría… o a la oscuridad y el pecado. La ambigüedad es parte del mensaje.'}
+];
+const boschInner=$('boschInner'), lens=$('lens'), lensBox=$('lensBox');
+const BOSCH_R=1603/1500;
+[...boschInner.querySelectorAll('.hs')].forEach((b,i)=>{b.style.left=(BOSCH[i].x*100)+'%';b.style.top=(BOSCH[i].y*100)+'%';});
+function focusBosch(i){
+  const p=BOSCH[i], Z=p.z;
+  lens.style.backgroundSize=(Z*100)+'% auto';
+  const fw=1/Z, fh=1/(Z*BOSCH_R);               // fracción visible de la imagen
+  const cx=Math.min(1-fw/2,Math.max(fw/2,p.x)), cy=Math.min(1-fh/2,Math.max(fh/2,p.y));
+  const px=(cx-fw/2)/(1-fw)*100, py=(cy-fh/2)/(1-fh)*100;
+  lens.style.backgroundPosition=px+'% '+py+'%';
+  lensBox.style.left=((cx-fw/2)*100)+'%'; lensBox.style.top=((cy-fh/2)*100)+'%';
+  lensBox.style.width=(fw*100)+'%'; lensBox.style.height=(fh*100)+'%';
+}
+hotspots('#boschInner',BOSCH.map(b=>[b.t,b.d]),'boschInfo',focusBosch);
+
+/* =========================================================
+   COMPARADORES (antes / después)
+   ========================================================= */
+document.querySelectorAll('.compare').forEach(c=>{
+  const knob=c.querySelector('.knob'); let drag=false;
+  const setX=cx=>{const r=c.getBoundingClientRect();const x=Math.min(98,Math.max(2,(cx-r.left)/r.width*100));c.style.setProperty('--x',x+'%');};
+  knob.addEventListener('pointerdown',e=>{drag=true;knob.setPointerCapture(e.pointerId);e.stopPropagation();});
+  knob.addEventListener('pointermove',e=>{if(drag)setX(e.clientX);});
+  knob.addEventListener('pointerup',()=>drag=false);
+});
+/* pestañas de la Sala VII */
+document.querySelectorAll('#caseTabs button').forEach(b=>b.onclick=()=>{
+  const c=b.dataset.c;
+  document.querySelectorAll('#caseTabs button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.case,.cmp-set').forEach(x=>x.classList.toggle('on',x.dataset.c===c));
+});
+
+/* =========================================================
+   SALA VI · la balanza
+   ========================================================= */
+const bal={L:0,R:0};
+document.querySelectorAll('.bal-btn').forEach(b=>b.onclick=()=>{
+  const s=b.dataset.side; if(bal[s]<2)bal[s]++;
+  document.querySelectorAll('.arg[data-'+s.toLowerCase()+']').forEach(a=>a.classList.toggle('on',+a.dataset[s.toLowerCase()]<bal[s]));
+  const ang=Math.max(-14,Math.min(14,(bal.R-bal.L)*7));
+  $('beam').style.transform='rotate('+ang+'deg)';
+  document.querySelectorAll('.pan').forEach(p=>p.style.transform='rotate('+(-ang)+'deg)');
+  $('panL').style.transformOrigin='30px 40px'; $('panR').style.transformOrigin='170px 40px';
+  $('balQuote').classList.toggle('on',bal.L+bal.R>=4);
+});
+
+/* =========================================================
+   SALA IX · disolución de la pintura en partículas
+   ========================================================= */
+const dissolve=(()=>{
+  const cv=$('dissolveCv'), img=$('s9img'), ctx=cv.getContext('2d');
+  let P=[], W=0,H=0, state=0, raf=null, t=0, ready=false, cell=4;
+  function build(){
+    const r=cv.getBoundingClientRect(); if(!r.width)return false;
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    W=cv.width=Math.round(r.width*dpr); H=cv.height=Math.round(r.height*dpr);
+    cell=Math.max(3,Math.round(Math.sqrt(W*H/5200)));
+    const oc=document.createElement('canvas'); oc.width=W; oc.height=H; const o=oc.getContext('2d');
+    // object-fit:cover
+    const ir=img.naturalWidth/img.naturalHeight, cr=W/H; let sw,sh,sx,sy;
+    if(ir>cr){sh=img.naturalHeight;sw=sh*cr;sx=(img.naturalWidth-sw)/2;sy=0}else{sw=img.naturalWidth;sh=sw/cr;sx=0;sy=(img.naturalHeight-sh)/2}
+    o.drawImage(img,sx,sy,sw,sh,0,0,W,H);
+    let data; try{data=o.getImageData(0,0,W,H).data;}catch(e){return false}
+    P=[];
+    for(let y=0;y<H;y+=cell)for(let x=0;x<W;x+=cell){
+      const k=((y+(cell>>1))*W+(x+(cell>>1)))*4; if(k>=data.length)continue;
+      const c=[data[k],data[k+1],data[k+2]];
+      const gold=[Math.min(255,c[0]*.35+230*.65),Math.min(255,c[1]*.35+190*.65),Math.min(255,c[2]*.35+110*.65)];
+      P.push({hx:x,hy:y,x,y,c,g:gold,d:(1-x/W)*1.1+(1-y/H)*.5+Math.random()*.6,
+        vx:(Math.random()-.3)*1.2,vy:-(Math.random()*1.6+.6),a:1,w:Math.random()*Math.PI*2});
+    }
+    ready=true; return true;
+  }
+  function frame(){
+    t+=1/60; ctx.clearRect(0,0,W,H);
+    let alive=false;
+    for(const p of P){
+      if(state===1){
+        if(t>p.d){ p.w+=.05; p.x+=p.vx+Math.sin(p.w)*.8; p.y+=p.vy; p.vy-=.012; p.a-=.007; }
+        if(p.a>0){alive=true; ctx.globalAlpha=Math.max(0,p.a); ctx.fillStyle='rgb('+p.c[0]+','+p.c[1]+','+p.c[2]+')'; ctx.fillRect(p.x,p.y,cell,cell);}
+      }else if(state===2){
+        const k=Math.min(1,Math.max(0,(t-p.d*.8)/1.6)); const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+        const x=p.sx+(p.hx-p.sx)*e, y=p.sy+(p.hy-p.sy)*e;
+        if(k<1)alive=true;
+        ctx.globalAlpha=.25+.75*e; ctx.fillStyle='rgb('+(p.g[0]|0)+','+(p.g[1]|0)+','+(p.g[2]|0)+')'; ctx.fillRect(x,y,cell*(1.6-.6*e),cell*(1.6-.6*e));
+      }
+    }
+    ctx.globalAlpha=1;
+    if(alive) raf=requestAnimationFrame(frame);
+    else { raf=null; if(state===2){ img.classList.remove('gone'); img.classList.add('ghost'); setTimeout(()=>{ if(state===2) ctx.clearRect(0,0,W,H); },900);} }
+  }
+  function setState(n){
+    const s=Math.min(2,n);
+    if(s===state)return;
+    if(!ready && !build()){ // si no se puede usar el lienzo, usar solo transición CSS
+      state=s; img.classList.toggle('gone',s===1); img.classList.toggle('ghost',s===2); return; }
+    cancelAnimationFrame(raf); t=0; state=s;
+    if(s===0){ ctx.clearRect(0,0,W,H); img.classList.remove('gone','ghost'); P.forEach(p=>{p.x=p.hx;p.y=p.hy;p.a=1;p.vy=-(Math.random()*1.6+.6);}); return; }
+    if(s===1){ img.classList.remove('ghost'); img.classList.add('gone'); P.forEach(p=>{p.x=p.hx;p.y=p.hy;p.a=1;p.vy=-(Math.random()*1.6+.6);}); frame(); }
+    if(s===2){ P.forEach(p=>{p.sx=p.hx+(Math.random()-.5)*W*1.4; p.sy=p.hy-H*(.4+Math.random()*.9);}); frame(); }
+  }
+  window.addEventListener('resize',()=>{ready=false;});
+  return {setState};
+})();
+
+/* =========================================================
+   DESTELLOS DORADOS
+   ========================================================= */
+(()=>{
+  const cv=$('sparkles'), ctx=cv.getContext('2d'); let W,H,S=[];
+  function size(){const d=Math.min(2,window.devicePixelRatio||1);W=cv.width=innerWidth*d;H=cv.height=innerHeight*d;
+    const n=Math.round(Math.min(110,innerWidth*innerHeight/16000));
+    S=[...Array(n)].map(()=>mk(true));}
+  function mk(any){const big=Math.random()<.14;return{x:Math.random()*W,y:any?Math.random()*H:H+20,r:(big?6+Math.random()*12:0.6+Math.random()*1.8)*(W/innerWidth),
+    big,sp:.3+Math.random()*1.4,ph:Math.random()*6.28,vy:-(.05+Math.random()*.22),vx:(Math.random()-.5)*.12,
+    h:Math.random()<.5?'255,214,120':(Math.random()<.5?'255,236,170':'240,190,90'),base:big?.07+Math.random()*.08:.35+Math.random()*.55};}
+  function draw(time){
+    ctx.clearRect(0,0,W,H); ctx.globalCompositeOperation='lighter';
+    const t=time/1000;
+    for(const s of S){
+      s.x+=s.vx; s.y+=s.vy; if(s.y<-30){Object.assign(s,mk(false));}
+      const tw=Math.pow(.5+.5*Math.sin(t*s.sp+s.ph),2.2); const a=s.base*tw;
+      if(a<.01)continue;
+      const R=s.big?s.r:s.r*6;
+      const g=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,R);
+      g.addColorStop(0,'rgba('+s.h+','+a+')'); g.addColorStop(s.big?.5:.15,'rgba('+s.h+','+(a*(s.big?.5:.35))+')'); g.addColorStop(1,'rgba('+s.h+',0)');
+      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(s.x,s.y,R,0,6.283); ctx.fill();
+      if(!s.big && tw>.8){ // pequeño destello en cruz
+        ctx.strokeStyle='rgba(255,240,200,'+(a*.6)+')'; ctx.lineWidth=.6; const L=s.r*5*tw;
+        ctx.beginPath(); ctx.moveTo(s.x-L,s.y); ctx.lineTo(s.x+L,s.y); ctx.moveTo(s.x,s.y-L); ctx.lineTo(s.x,s.y+L); ctx.stroke(); }
+    }
+    ctx.globalCompositeOperation='source-over';
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',size); size(); requestAnimationFrame(draw);
+})();
+
+/* =========================================================
+   MÚSICA AMBIENTAL GENERADA (Web Audio) + archivo propio
+   ========================================================= */
+const audio=(()=>{
+  let ctx,master,bus,filt,rev,vol=.35,mode='amb',on=true,chordT,bellT,ci=0,fileEl=null,started=false;
+  const mtof=m=>440*Math.pow(2,(m-69)/12);
+  // Progresión contemplativa en La menor (eólico), sin resolución "épica"
+  const CH=[[45,52,55,59,60],[41,48,52,57,64],[48,55,59,62,64],[40,47,50,55,59],[38,50,57,60,65],[45,52,57,60,64]];
+  const BELL=[69,72,74,76,79,81];
+  function impulse(sec){const len=ctx.sampleRate*sec,b=ctx.createBuffer(2,len,ctx.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,2.6);}return b;}
+  function init(){
+    ctx=new (window.AudioContext||window.webkitAudioContext)();
+    master=ctx.createGain(); master.gain.value=0; master.connect(ctx.destination);
+    filt=ctx.createBiquadFilter(); filt.type='lowpass'; filt.frequency.value=1500; filt.Q.value=.3;
+    rev=ctx.createConvolver(); rev.buffer=impulse(5);
+    const wet=ctx.createGain(); wet.gain.value=.85; const dry=ctx.createGain(); dry.gain.value=.45;
+    bus=ctx.createGain(); bus.connect(filt); filt.connect(dry); filt.connect(rev); rev.connect(wet); dry.connect(master); wet.connect(master);
+  }
+  function chord(){
+    if(mode!=='amb'||!on)return;
+    const now=ctx.currentTime, dur=13, notes=CH[ci++%CH.length];
+    notes.forEach((n,j)=>{[-6,6].forEach(det=>{
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type=det<0?'sine':'triangle'; o.frequency.value=mtof(n); o.detune.value=det+(Math.random()*4-2);
+      const peak=(j===0?.05:.028)*(det<0?1:.5);
+      g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(peak,now+4); g.gain.setValueAtTime(peak,now+8); g.gain.linearRampToValueAtTime(0,now+dur);
+      o.connect(g); g.connect(bus); o.start(now); o.stop(now+dur+.2);
+    });});
+  }
+  function bell(){
+    if(mode==='amb'&&on){
+      const now=ctx.currentTime, f=mtof(BELL[Math.floor(Math.random()*BELL.length)]);
+      [[1,.035],[2.01,.01],[3.02,.004]].forEach(([m,a])=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f*m;
+        g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(a,now+.02);g.gain.exponentialRampToValueAtTime(.0001,now+5.5);o.connect(g);g.connect(rev);g.connect(bus);o.start(now);o.stop(now+6);});
+    }
+    bellT=setTimeout(bell,3500+Math.random()*5500);
+  }
+  function startAmb(){ clearInterval(chordT); chord(); chordT=setInterval(chord,9000); }
+  function applyVol(){ if(!ctx)return; const target=(on&&mode==='amb')?vol:0; master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(target,ctx.currentTime,1.2);
+    if(fileEl){fileEl.volume=Math.min(1,vol*1.2); if(on&&mode==='file'){fileEl.play().catch(()=>{});}else fileEl.pause();}
+    $('musicBtn').classList.toggle('off',!on||mode==='off'); }
+  function useFile(src){ if(!fileEl){fileEl=new Audio();fileEl.loop=true;} fileEl.src=src; setMode('file'); }
+  function setMode(m){ mode=m; on=m!=='off'; ['mAmb','mFile','mOff'].forEach(id=>$(id).classList.remove('on'));
+    $(m==='amb'?'mAmb':m==='file'?'mFile':'mOff').classList.add('on'); applyVol(); }
+  // ¿existe audio/musica.mp3 junto a la página? (GitHub Pages)
+  const probeAudio=new Audio(); probeAudio.preload='metadata'; let hasLocal=false;
+  probeAudio.addEventListener('loadedmetadata',()=>{hasLocal=true;}); probeAudio.src='audio/musica.mp3';
+  return {
+    start(){ if(started){ctx.resume();return;} started=true; try{init(); startAmb(); bell(); if(hasLocal){useFile('audio/musica.mp3');} applyVol();}catch(e){} },
+    toggle(){ if(!started)return; on=!on; if(on&&mode==='off')mode='amb'; applyVol(); },
+    steps(){ if(!ctx||!on)return; const now=ctx.currentTime;
+      for(let i=0;i<3;i++){const len=ctx.sampleRate*.18,b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);for(let j=0;j<len;j++)d[j]=(Math.random()*2-1)*Math.pow(1-j/len,6);
+        const s=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=380;g.gain.value=.22*vol/.35;
+        s.connect(f);f.connect(g);g.connect(ctx.destination);s.start(now+.15+i*.42);} },
+    mood(m){ if(!ctx)return; filt.frequency.setTargetAtTime([1500,1000,650][m]||1500,ctx.currentTime,2.5); },
+    setVol(v){vol=v;applyVol();}, setMode, useFile
+  };
+})();
+$('musicBtn').onclick=e=>{e.stopPropagation();$('musicPop').classList.toggle('on');};
+$('musicPop').onclick=e=>e.stopPropagation();
+document.addEventListener('click',()=>$('musicPop').classList.remove('on'));
+$('vol').oninput=e=>audio.setVol(e.target.value/100);
+$('mAmb').onclick=()=>{audio.start();audio.setMode('amb');};
+$('mOff').onclick=()=>audio.setMode('off');
+$('mFile').onclick=()=>$('audioFile').click();
+$('audioFile').onchange=e=>{const f=e.target.files[0];if(f){audio.start();audio.useFile(URL.createObjectURL(f));}};
+
+/* =========================================================
+   CONTROL REMOTO DESDE EL CELULAR (PeerJS, funciona en GitHub Pages)
+   ========================================================= */
+let peer=null, conns=[];
+function stateMsg(){const S=SALAS[cur];return{type:'state',i:cur,title:salas[cur].dataset.title,fase:S.fase,pace:paceInfo(),step:revealed[cur],steps:S.steps,target:S.time,time:elapsed()};}
+function pushState(){conns.forEach(c=>{try{if(c.open)c.send(stateMsg());}catch(e){}});}
+function handleCmd(cmd){ if(!entered)enter(); if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
+async function openRemote(){
+  $('remoteModal').classList.add('on');
+  if(peer&&peer.id){showQR(peer.id);return;}
+  const msg=$('remoteMsg');
+  try{
+    if(typeof RTCPeerConnection==='undefined') throw new Error('rtc');
+    msg.textContent='Creando conexión segura…';
+    await loadScript(PEER_SRC);
+    let id; try{id=sessionStorage.getItem('museo-peer');}catch(e){}
+    if(!id){id='museo-arte-'+Math.random().toString(36).slice(2,8);try{sessionStorage.setItem('museo-peer',id);}catch(e){}}
+    peer=new Peer(id);
+    peer.on('open',pid=>showQR(pid));
+    peer.on('connection',c=>{conns.push(c);
+      c.on('open',()=>{$('remoteStatus').textContent='celular conectado ✓';c.send(stateMsg());setTimeout(()=>$('remoteModal').classList.remove('on'),1400);});
+      c.on('data',d=>{if(d&&d.type==='cmd')handleCmd(d.cmd); if(d&&d.type==='hello')c.send(stateMsg());});
+      c.on('close',()=>{conns=conns.filter(x=>x!==c);$('remoteStatus').textContent='celular desconectado';});});
+    peer.on('error',e=>{ if(e.type==='unavailable-id'){try{sessionStorage.removeItem('museo-peer');}catch(_){} }
+      msg.innerHTML='No se pudo abrir la conexión ('+(e.type||'error')+'). Revisa tu internet e inténtalo de nuevo.'; });
+  }catch(e){
+    msg.innerHTML='Esta vista previa no permite conexiones entre dispositivos.<br><b>El control con el celular funciona al publicar la carpeta en GitHub Pages</b>: abre ahí la presentación, pulsa <b>R</b> y escanea el código QR.<br><br>Alternativa sin internet: un presentador inalámbrico (clicker) funciona directamente.';
+  }
+}
+async function showQR(id){
+  const url=location.origin+location.pathname+'?remote='+encodeURIComponent(id);
+  $('remoteMsg').textContent='Escanea este código con la cámara del celular. Allí verás los botones, tus notas y el cronómetro.';
+  $('remoteUrl').textContent=url;
+  try{ await loadScript(QR_SRC); const q=qrcode(0,'M'); q.addData(url); q.make(); $('qr').innerHTML=q.createSvgTag({cellSize:4,margin:1,scalable:true}); }
+  catch(e){ $('qr').innerHTML='<p style="color:#2a1f17;margin:0">Abre en el celular la dirección de abajo.</p>'; }
+}
+$('remoteBtn').onclick=openRemote;
+function openCredits(){
+  const base=['La escuela de Atenas, Rafael (1509–1511) · Dominio público','El jardín de las delicias, El Bosco (c. 1490–1510), Museo del Prado · Dominio público','Los girasoles, Vincent van Gogh (1888), National Gallery · Dominio público (mancha de sopa simulada)'];
+  $('creditsList').innerHTML=base.concat(Object.values(DEFAULTS).map(d=>d[1]+' — <span style="opacity:.6">'+d[0].replace(/_/g,' ')+'</span>')).map(t=>'<div>• '+t+'</div>').join('');
+  $('creditsModal').classList.add('on');
+}
+$('remoteClose').onclick=()=>$('remoteModal').classList.remove('on');
+
+updateNotes();
+}
+</script>
+</body>
+</html>
