@@ -427,7 +427,9 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
         <img class="art" src="img/atenas.jpg" alt="La escuela de Atenas">
         <button class="hs" style="left:48%;top:57%" data-i="0">1</button>
         <button class="hs" style="left:53.5%;top:61%" data-i="1">2</button>
-        <button class="hs" style="left:50.5%;top:44%" data-i="2">3</button>
+        <button class="hs" style="left:22%;top:38%" data-i="2">3</button>
+        <button class="hs" style="left:77%;top:38%" data-i="3">4</button>
+        <button class="hs" style="left:50.5%;top:44%" data-i="4">5</button>
       </div>
     </div>
     <div class="abs" style="left:57cqw;top:13.6cqw;width:37cqw">
@@ -575,12 +577,17 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
     <div class="plaque"><b>Sala VII</b><i>Guerra</i></div>
     <h2 class="t abs" style="left:6cqw;top:6.6cqw">Cuando desaparece una parte de <em>nuestra historia</em></h2>
     <div class="tabs abs" style="left:6cqw;top:13.2cqw" id="caseTabs">
-      <button class="on" data-c="2">Mostar · 1993</button>
+      <button class="on" data-c="0">Palmira · 2015</button>
+      <button data-c="2">Mostar · 1993</button>
       <button data-c="3">Bogotá · 2026</button>
     </div>
     <div class="spot" style="left:2cqw;top:12cqw;width:58cqw;height:38cqw"></div>
     <div class="frame" style="left:6cqw;top:17.4cqw;width:50cqw;height:28.6cqw">
       <div class="inner">
+        <div class="cmp-set on" data-c="0"><div class="compare">
+          <div class="ly ly-a"><div class="slot" data-slot="palmira-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · TEMPLO DE BEL, ANTES]"></div></div>
+          <div class="ly ly-b"><div class="slot" data-slot="palmira-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · DESPUÉS DE 2015]"></div></div>
+          <div class="bar"><div class="knob">⟷</div></div></div></div>
         <div class="cmp-set" data-c="3"><div class="bog">
           <div class="kicker">Museo Nacional de Colombia · Bogotá</div>
           <ol>
@@ -589,7 +596,7 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
             <li><b>19 oct</b><span>Un juez admite una tutela y ordena conservar las piezas.</span></li>
             <li><b>30 oct</b><span>Por orden judicial, las obras vuelven a las salas.</span></li>
           </ol></div></div>
-        <div class="cmp-set on" data-c="2"><div class="compare">
+        <div class="cmp-set" data-c="2"><div class="compare">
           <div class="ly ly-a"><div class="slot" data-slot="mostar-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · PUENTE VIEJO, 1993]"></div></div>
           <div class="ly ly-b"><div class="slot" data-slot="mostar-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · PUENTE RECONSTRUIDO, 2004]"></div></div>
           <div class="bar"><div class="knob">⟷</div></div></div></div>
@@ -597,7 +604,9 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
     </div>
     <div class="caprow" data-cmp style="left:6cqw;top:46.6cqw;width:50cqw"><span>← Antes</span><span>Después →</span></div>
     <div class="abs" style="left:60cqw;top:17.4cqw;width:34cqw">
-      <div class="case on" data-c="2"><h3>Puente Viejo</h3><div class="when">Mostar, Bosnia · 1566 → 1993 → 2004</div>
+      <div class="case on" data-c="0"><h3>Templo de Bel</h3><div class="when">Palmira, Siria · s. I d. C. → 2015</div>
+        <p>Resistió casi dos mil años de terremotos e imperios. En 2015 el Estado Islámico lo dinamitó.</p></div>
+      <div class="case" data-c="2"><h3>Puente Viejo</h3><div class="when">Mostar, Bosnia · 1566 → 1993 → 2004</div>
         <p>Unía dos orillas y dos comunidades. Fue derribado durante la guerra y reconstruido piedra a piedra once años después… <span class="gold">¿es el mismo puente?</span></p></div>
       <div class="case" data-c="3"><h3>Museo Nacional</h3><div class="when">Bogotá, Colombia · octubre de 2026</div>
         <p>Entre las piezas retiradas había obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Gobierno habló de evitar el «adoctrinamiento político»; sus críticos, de censura.</p></div>
@@ -745,7 +754,7 @@ const SALAS=[
   vocal:'Baja el volumen en «nadie llora por la piedra» para crear cercanía.',
   visual:'Activa el interruptor Materia → Significado señalando la imagen con la mano abierta.',
   publico:'Saberes previos: «Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada».'},
- {steps:2,time:'0:35',mood:0,fase:'Desarrollo',labels:['1 Platón','2 Aristóteles','3 Perspectiva'],
+ {steps:4,time:'0:45',mood:0,fase:'Desarrollo',labels:['1 Platón','2 Aristóteles','3 Apolo','4 Atenea','5 Perspectiva'],
   verbal:'El arte es un lenguaje. Punto 1: Platón señala arriba. Punto 2: Aristóteles señala abajo. Dos filosofías sin una sola palabra. Define alegoría y cierra con el punto 6: la composición nos dice dónde mirar.',
   vocal:'Enfatiza «sin una sola palabra».',
   visual:'Imita los gestos: dedo hacia arriba (Platón), mano abierta hacia abajo (Aristóteles). El cuerpo también explica.'},
@@ -763,8 +772,8 @@ const SALAS=[
   vocal:'Tono neutro e informativo en los datos; más intensidad en la pregunta final.',
   visual:'Da un paso a la izquierda para una postura y a la derecha para la otra: el espacio muestra el debate.',
   publico:'Construcción colectiva: «¿Quiénes le dan más importancia a la protesta? ¿Y quiénes al patrimonio?». Cuenta las manos y comenta el resultado.'},
- {steps:2,time:'0:55',mood:2,fase:'Desarrollo',labels:['Mostar','Mostar después','Bogotá 2026'],
-  verbal:'Mostar y el caso cercano del Museo Nacional en Bogotá.',
+ {steps:4,time:'1:05',mood:2,fase:'Desarrollo',labels:['Palmira','Palmira después','Mostar','Mostar después','Bogotá 2026'],
+  verbal:'Palmira, Mostar y el caso cercano del Museo Nacional en Bogotá.',
   vocal:'Voz más grave y lenta. Silencio breve después de «es el objetivo».',
   visual:'Quédate quieto: aquí la seriedad la da la quietud. En el caso de Bogotá, da un paso al frente: es nuestra historia.'},
  {steps:3,time:'0:50',mood:1,fase:'Desarrollo',labels:['Alegoría','Línea 1','Línea 2','Línea 3'],
@@ -785,7 +794,9 @@ const SPEECH=[
  ['Empecemos por lo más simple. ¿Qué es una obra de arte? Si miramos el Partenón como objeto, es mármol, columnas, piedra: materia. Pero si fuera solo eso, destruirlo sería como romper una silla, y no reaccionamos igual.',
   '[cambia a «Significado»] Levante la mano quien haya visto en las noticias una estatua derribada o una obra atacada. [pausa] ¿Qué sintieron? Porque nadie llora por la piedra. Lloramos por lo que significaba: memoria, identidad, fe, orgullo.'],
  ['Y es que el arte es un lenguaje. Miren La escuela de Atenas, de Rafael. En el centro, Platón señala hacia arriba: el mundo de las ideas.',
-  'A su lado, Aristóteles extiende la mano hacia la tierra: el conocimiento que nace de lo que percibimos. Dos filosofías completas… sin una sola palabra. Eso es una alegoría: una idea abstracta convertida en imagen.',
+  'A su lado, Aristóteles extiende la mano hacia la tierra: el conocimiento que nace de lo que percibimos. Dos filosofías completas… sin una sola palabra.',
+  'A la izquierda, Apolo, el dios de las artes y la armonía.',
+  'A la derecha, Atenea, la diosa de la sabiduría. Eso es una alegoría: una idea abstracta convertida en imagen.',
   'Y todas las líneas de la arquitectura convergen en ellos dos: Rafael no solo pintó personas; nos dijo dónde mirar.'],
  ['Ahora, El jardín de las delicias, de El Bosco, pintado hace más de quinientos años. El Bosco nunca explicó su obra: tenemos lecturas, no certezas. ¿Qué creen que significa esta pareja encerrada en una burbuja de cristal? [escucha una respuesta] La dicha es como el vidrio: pronto se rompe.',
   'Frutos gigantes: placeres dulces, pero efímeros.',
@@ -795,7 +806,9 @@ const SPEECH=[
   '[la sopa cubre la pintura] La pintura estaba protegida por un vidrio: quedó intacta, y el marco sufrió daños menores. Veamos los argumentos de cada lado.',
   'Desde la libertad de protesta: el gesto puso la crisis climática en los titulares de todo el mundo, y la obra no corrió un peligro real.',
   'Desde el patrimonio: se arriesgan bienes irremplazables, y el acto puede eclipsar la causa; terminamos hablando de la sopa y no del clima. Ahora ustedes: ¿quiénes le dan más importancia a la protesta? [cuenta las manos] ¿Y quiénes al patrimonio? [cuenta las manos]'],
- ['Pero hay casos en los que no hay vidrio que proteja. En 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar, que había unido dos orillas durante más de cuatrocientos años.',
+ ['Pero hay casos en los que no hay vidrio que proteja. El Templo de Bel, en Palmira, Siria, resistió casi dos mil años de terremotos e imperios.',
+  'En 2015, el Estado Islámico lo dinamitó.',
+  'En 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar, que había unido dos orillas durante más de cuatrocientos años.',
   'Se reconstruyó en 2004, piedra a piedra… pero ¿es el mismo puente?',
   'Y no hay que ir tan lejos. El 15 de octubre de este año, aquí en Bogotá, el Gobierno ordenó retirar 63 piezas del Museo Nacional, entre ellas obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Ministerio de Cultura dijo que el museo no debía ser un instrumento de adoctrinamiento político; sus críticos lo llamaron censura. Hubo plantones, una tutela y, el 30 de octubre, por orden de un juez, las obras volvieron a las salas. [pausa] No siempre se destruye con dinamita: a veces basta con descolgar.'],
  ['Así como el arte construye con imágenes, nosotros construimos con palabras. Una alegoría es una idea abstracta hecha imagen. Piensen en la dama de la justicia: sostiene una balanza, que es la equidad; tiene los ojos vendados, porque juzga sin mirar a quién; y empuña una espada, que es la fuerza de la ley. Y quizá la alegoría más significativa de la vida sea el amor: algo que no se ve y, sin embargo, lo mueve todo. Escuchen:',
@@ -900,11 +913,12 @@ function applySteps(i){
   const n=revealed[i];
   salas[i].querySelectorAll('[data-step]').forEach(el=>el.classList.toggle('on',+el.dataset.step<=n));
   if(i===1) setSig(n>=1);
-  if(i===2) pickAthens(Math.min(n,5));
+  if(i===2) pickAthens(Math.min(n,4));
   if(i===3) pickBosch(Math.min(n,5));
   if(i===5){ slideTo($('cmpSun'), n>=1?8:50, true); setBalance(+(n>=2),+(n>=3)); }
-  if(i===6){ const c=n<=1?2:3; setCase(c);
-    if(c===2) slideTo(document.querySelector('.cmp-set[data-c="2"] .compare'), n>=1?6:50, true); }
+  if(i===6){ const c=n<=1?0:(n<=3?2:3); setCase(c);
+    if(c===0) slideTo(document.querySelector('.cmp-set[data-c="0"] .compare'), n>=1?6:50, true);
+    if(c===2) slideTo(document.querySelector('.cmp-set[data-c="2"] .compare'), n>=3?6:50, true); }
   if(i===7) $('anaHint').style.opacity=n>=3?0:.4;
   if(i===8) dissolve.setState(n);
 }
@@ -987,7 +1001,7 @@ function updateNotes(){
 function toggleNotes(){document.body.classList.toggle('notes-on');}
 $('notesBtn').onclick=toggleNotes;
 function paceInfo(){const el=t0?(Date.now()-t0)/1000:0, plan=SALAS[cur].planEnd, d=el-plan;
-  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 6:40 (máx. 8:00)',col,el};}
+  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 7:00 (máx. 8:00)',col,el};}
 setInterval(()=>{const p=paceInfo();$('notesTime').textContent=p.txt;$('notesTime').style.color=p.col;$('timerChip').textContent=fmt(p.el*1000);$('timerChip').style.color=p.col;},500);
 setInterval(()=>pushState(),2000);
 
@@ -1016,6 +1030,8 @@ const DEFAULTS={
  'rupestre':['Altamira,_bison.jpg','Bisonte de Altamira (reproducción) · Dominio público'],
  'monumento-historico':['Kheops-Pyramid.jpg','Pirámide de Keops · Nina Aldin Thune · CC BY-SA 3.0'],
  'pintura-historica':['El_Tres_de_Mayo,_by_Francisco_de_Goya,_from_Prado_(cropped).jpg','El tres de mayo de 1808, Francisco de Goya (1814), Museo del Prado · Dominio público'],
+ 'palmira-antes':['Temple_of_Bel,_Palmyra_02.jpg','Templo de Bel, Palmira (2010) · Bernard Gagnon · CC BY-SA'],
+ 'palmira-despues':['Palmyra_after_freedom_(4).jpg','Palmira, marzo de 2016 · Jawad Shaar (Tasnim News) · ver licencia en Commons'],
  'mostar-antes':['Le_Vieux_Pont_de_Mostar_(4).jpg','Puente Viejo de Mostar en 1974 · Jpbazard · ver licencia en Commons'],
  'mostar-despues':['Stari_Most_(Old_Bridge)_Mostar.jpg','Puente Viejo reconstruido (2019) · Djani Behram · ver licencia en Commons']
 };
@@ -1058,6 +1074,8 @@ $('swBtn').onclick=()=>setSig(!$('swBtn').classList.contains('on'));
 const ATHENS=[
  ['Platón','Señala hacia arriba: el mundo de las ideas, lo eterno y perfecto. Lleva el Timeo bajo el brazo.'],
  ['Aristóteles','Extiende la mano hacia la tierra: el conocimiento nace de lo que percibimos. Sostiene su Ética.'],
+ ['Apolo','Dios de las artes y la armonía, con su lira. Preside el lado de la poesía y la intuición.'],
+ ['Atenea','Diosa de la sabiduría y la razón, con lanza y escudo. Preside el lado del pensamiento racional.'],
  ['La perspectiva','Todas las líneas de la arquitectura convergen entre los dos filósofos: la composición nos dice dónde mirar.']
 ];
 function hotspots(innerSel,data,infoId,onPick){
@@ -1105,7 +1123,7 @@ document.querySelectorAll('.compare').forEach(c=>{
   knob.addEventListener('pointerup',()=>drag=false);
 });
 /* pestañas de la Sala VII */
-let curCase='2';
+let curCase='0';
 function setCase(c){ c=String(c); curCase=c;
   document.querySelectorAll('#caseTabs button').forEach(x=>x.classList.toggle('on',x.dataset.c===c));
   document.querySelectorAll('.case,.cmp-set').forEach(x=>x.classList.toggle('on',x.dataset.c===c));
