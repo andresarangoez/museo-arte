@@ -22,4 +22,4 @@ También puedes arrastrar una imagen sobre cualquier espacio durante la presenta
 - Para usar tu propia canción, súbela como `audio/musica.mp3` y sonará sola. También puedes cargarla desde el botón ♪.
 
 ## Teclas
-→ / Espacio: avanzar · ← retroceder · N: notas y cronómetro · M: música · F: pantalla completa · R: celular · B: pantalla negra · 1–9, 0: ir a una sala.
+→ / Espacio: avanzar · ← retroceder · N: notas y cronómetro · M: música · F: pantalla completa · R: celular · B: pantalla negra · C: créditos · H: ejercicio de respiración · 1–9, 0: ir a una sala. La presentación abre directo en la Sala I; la música y el cronómetro empiezan con la primera tecla o clic en el computador.

@@ -316,7 +316,7 @@ body.notes-on #notes{opacity:1;transform:translate(-50%,0);pointer-events:auto}
 #enter:hover{background:var(--gold);color:#1b1410}
 #breathe{margin-top:1.6vh;background:none;border:0;color:var(--ivory);opacity:.55;font:400 1.4vh var(--sans);letter-spacing:.12em;cursor:pointer;text-decoration:underline;text-underline-offset:.5vh}
 #breathe:hover{opacity:.9}
-#breath{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(18,15,14,.97);z-index:3}
+#breath{position:fixed;inset:0;z-index:80;color:var(--ivory);text-align:center;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(18,15,14,.97);z-index:3}
 #breath.on{display:flex}
 #breath .bc{width:14vh;height:14vh;border-radius:50%;border:1px solid var(--gold);background:radial-gradient(circle,rgba(230,201,125,.35),rgba(230,201,125,.05));transition:transform 2s ease-in-out}
 #breath .bc.in{transform:scale(2)}
@@ -353,25 +353,7 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
 <body>
 
 <!-- ===================== ENTRADA ===================== -->
-<div id="intro">
-  <div class="k">Taller de oratoria · Recorrido en 10 salas</div>
-  <h1>¿Qué destruimos cuando destruimos el arte?</h1>
-  <div class="sub">El arte como memoria, símbolo y expresión de la humanidad</div>
-  <button id="enter">Entrar al museo</button>
-  <button id="breathe">Respirar antes de empezar · 30 s</button>
-  <div id="breath"><div class="bc"></div><div class="bt" id="bt">Inhala</div><div class="bs">Respiración diafragmática · inhala en 2 tiempos, exhala en 4 con los labios fruncidos</div></div>
-  <div class="keys">
-    <span><kbd>→</kbd><kbd>Espacio</kbd>avanzar</span>
-    <span><kbd>←</kbd>retroceder</span>
-    <span><kbd>N</kbd>notas y cronómetro</span>
-    <span><kbd>M</kbd>música</span>
-    <span><kbd>F</kbd>pantalla completa</span>
-    <span><kbd>R</kbd>control con el celular</span>
-    <span><kbd>B</kbd>pantalla negra</span>
-    <span><kbd>C</kbd>créditos</span>
-  </div>
-  <div class="door"></div>
-</div>
+<div id="breath"><div class="bc"></div><div class="bt" id="bt">Inhala</div><div class="bs">Respiración diafragmática · inhala en 2 tiempos, exhala en 4 con los labios fruncidos</div></div>
 
 <div id="world"><div id="track">
 
@@ -947,7 +929,7 @@ world.addEventListener('animationend',()=>world.classList.remove('walking'));
 document.addEventListener('keydown',e=>{
   if(e.target.isContentEditable||e.target.tagName==='INPUT')return;
   const k=e.key;
-  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault(); if(!entered)enter(); else next();}
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault(); next();}
   else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();prev();}
   else if(k==='Home')go(0); else if(k==='End')go(salas.length-1);
   else if(k==='n'||k==='N')toggleNotes();
@@ -956,6 +938,7 @@ document.addEventListener('keydown',e=>{
   else if(k==='r'||k==='R')openRemote();
   else if(k==='b'||k==='B'||k==='.')$('black').classList.toggle('on');
   else if(k==='c'||k==='C')openCredits();
+  else if(k==='h'||k==='H')breathe();
   else if(k==='Escape'){$('remoteModal').classList.remove('on');$('musicPop').classList.remove('on');}
   else if(/^[0-9]$/.test(k)){go(k==='0'?9:+k-1);}
   wake();
@@ -971,17 +954,19 @@ document.addEventListener('mousemove',wake);
 
 /* ---------- entrada ---------- */
 function enter(){
-  if(entered)return; entered=true; t0=Date.now();
-  $('intro').classList.add('out'); audio.start();
+  if(entered)return; entered=true;
   const m=location.hash.match(/^#sala-(\d+)$/); const start=m?Math.min(10,Math.max(1,+m[1]))-1:0;
   track.style.transition='none'; cur=start; track.style.transform='translateX('+(-start*100)+'vw)'; void track.offsetWidth; track.style.transition='';
   applySteps(cur); paintHud(); updateNotes(); pushState(); wake();
 }
-$('enter').onclick=()=>{enter(); toggleFS(true);};
-$('breathe').onclick=()=>{const b=$('breath'),c=b.querySelector('.bc'),t=$('bt');b.classList.add('on');let n=0;
+function breathe(){const b=$('breath'),c=b.querySelector('.bc'),t=$('bt');b.classList.add('on');let n=0;
   const cyc=()=>{if(n++>=5){b.classList.remove('on');return;} c.className='bc in';t.textContent='Inhala… 1, 2';
     setTimeout(()=>{c.className='bc out';t.textContent='Exhala… 1, 2, 3, 4';},2000); setTimeout(cyc,6000);}; cyc();
-  b.onclick=()=>{n=99;b.classList.remove('on');};};
+  b.onclick=()=>{n=99;b.classList.remove('on');};}
+/* Arranque directo en la Sala I; música y cronómetro empiezan con la primera tecla o clic */
+let started=false;
+function firstGesture(){ if(started)return; started=true; t0=Date.now(); audio.start(); }
+['keydown','pointerdown'].forEach(ev=>document.addEventListener(ev,firstGesture,{capture:true}));
 paintHud(); applySteps(0);
 
 /* ---------- pantalla completa ---------- */
@@ -1307,7 +1292,7 @@ $('audioFile').onchange=e=>{const f=e.target.files[0];if(f){audio.start();audio.
 let peer=null, conns=[];
 function stateMsg(){const S=SALAS[cur];return{type:'state',i:cur,title:salas[cur].dataset.title,fase:S.fase,pace:paceInfo(),step:revealed[cur],steps:S.steps,target:S.time,time:elapsed()};}
 function pushState(){conns.forEach(c=>{try{if(c.open)c.send(stateMsg());}catch(e){}});}
-function handleCmd(cmd,d){ if(!entered)enter(); if(cmd==='goto'){ revealed[cur]=Math.max(0,Math.min(SALAS[cur].steps,d.step|0)); applySteps(cur); updateNotes(); pushState(); return; } if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
+function handleCmd(cmd,d){ if(!t0)t0=Date.now(); if(cmd==='goto'){ revealed[cur]=Math.max(0,Math.min(SALAS[cur].steps,d.step|0)); applySteps(cur); updateNotes(); pushState(); return; } if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
 async function openRemote(){
   $('remoteModal').classList.add('on');
   if(peer&&peer.id){showQR(peer.id);return;}
@@ -1345,6 +1330,7 @@ function openCredits(){
 }
 $('remoteClose').onclick=()=>$('remoteModal').classList.remove('on');
 
+enter();
 updateNotes();
 }
 </script>
