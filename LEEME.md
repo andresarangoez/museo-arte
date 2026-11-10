@@ -11,10 +11,10 @@
 3. Los dos dispositivos necesitan internet. Si la red del salón falla, usa el teclado o un presentador inalámbrico (clicker).
 
 ## Imágenes
-Los espacios ya tienen fotos de Wikimedia Commons (Partenón, Altamira, Keops, Goya, Palmira, Bamiyán y Mostar). Se cargan directo desde Commons cuando la página está en GitHub Pages o se abre con internet. Para ver los créditos y licencias, pulsa la tecla **C** durante la presentación.
+Los espacios ya tienen fotos de Wikimedia Commons (Partenón, Altamira, Keops, Goya y Palmira). Se cargan directo desde Commons cuando la página está en GitHub Pages o se abre con internet. Para ver los créditos y licencias, pulsa la tecla **C** durante la presentación.
 
 Para cambiar una imagen, o para que funcione sin internet, sube tu archivo a `img/obras/` con el nombre del espacio. Ese archivo tiene prioridad sobre la foto de Commons:
-`monumento`, `rupestre`, `monumento-historico`, `pintura-historica`, `protesta`, `palmira-antes`, `palmira-despues`, `bamiyan-antes`, `bamiyan-despues`, `mostar-antes`, `mostar-despues` (.jpg, .png o .webp).
+`monumento`, `rupestre`, `monumento-historico`, `pintura-historica`, `protesta`, `palmira-antes`, `palmira-despues` (.jpg, .png o .webp).
 También puedes arrastrar una imagen sobre cualquier espacio durante la presentación.
 
 ## Música

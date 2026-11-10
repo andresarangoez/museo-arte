@@ -578,7 +578,6 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
     <h2 class="t abs" style="left:6cqw;top:6.6cqw">Cuando desaparece una parte de <em>nuestra historia</em></h2>
     <div class="tabs abs" style="left:6cqw;top:13.2cqw" id="caseTabs">
       <button class="on" data-c="0">Palmira · 2015</button>
-      <button data-c="2">Mostar · 1993</button>
       <button data-c="3">Bogotá · 2026</button>
     </div>
     <div class="spot" style="left:2cqw;top:12cqw;width:58cqw;height:38cqw"></div>
@@ -596,18 +595,12 @@ body.remote-mode #remote{display:flex;flex-direction:column;position:fixed;inset
             <li><b>19 oct</b><span>Un juez admite una tutela y ordena conservar las piezas.</span></li>
             <li><b>30 oct</b><span>Por orden judicial, las obras vuelven a las salas.</span></li>
           </ol></div></div>
-        <div class="cmp-set" data-c="2"><div class="compare">
-          <div class="ly ly-a"><div class="slot" data-slot="mostar-antes" data-label="[ESPACIO PARA FOTOGRAFÍA HISTÓRICA · PUENTE VIEJO, 1993]"></div></div>
-          <div class="ly ly-b"><div class="slot" data-slot="mostar-despues" data-label="[ESPACIO PARA FOTOGRAFÍA · PUENTE RECONSTRUIDO, 2004]"></div></div>
-          <div class="bar"><div class="knob">⟷</div></div></div></div>
               </div>
     </div>
     <div class="caprow" data-cmp style="left:6cqw;top:46.6cqw;width:50cqw"><span>← Antes</span><span>Después →</span></div>
     <div class="abs" style="left:60cqw;top:17.4cqw;width:34cqw">
       <div class="case on" data-c="0"><h3>Templo de Bel</h3><div class="when">Palmira, Siria · s. I d. C. → 2015</div>
         <p>Resistió casi dos mil años de terremotos e imperios. En 2015 el Estado Islámico lo dinamitó.</p></div>
-      <div class="case" data-c="2"><h3>Puente Viejo</h3><div class="when">Mostar, Bosnia · 1566 → 1993 → 2004</div>
-        <p>Unía dos orillas y dos comunidades. Fue derribado durante la guerra y reconstruido piedra a piedra once años después… <span class="gold">¿es el mismo puente?</span></p></div>
       <div class="case" data-c="3"><h3>Museo Nacional</h3><div class="when">Bogotá, Colombia · octubre de 2026</div>
         <p>Entre las piezas retiradas había obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Gobierno habló de evitar el «adoctrinamiento político»; sus críticos, de censura.</p></div>
       <p id="warQuote" class="serif-line" style="margin-top:2.2cqw;border-top:1px solid rgba(230,201,125,.35);padding-top:1.2cqw">A veces la destrucción del patrimonio no es un daño colateral: <span class="gold">es el objetivo.</span></p>
@@ -772,8 +765,8 @@ const SALAS=[
   vocal:'Tono neutro e informativo en los datos; más intensidad en la pregunta final.',
   visual:'Da un paso a la izquierda para una postura y a la derecha para la otra: el espacio muestra el debate.',
   publico:'Construcción colectiva: «¿Quiénes le dan más importancia a la protesta? ¿Y quiénes al patrimonio?». Cuenta las manos y comenta el resultado.'},
- {steps:4,time:'1:05',mood:2,fase:'Desarrollo',labels:['Palmira','Palmira después','Mostar','Mostar después','Bogotá 2026'],
-  verbal:'Palmira, Mostar y el caso cercano del Museo Nacional en Bogotá.',
+ {steps:2,time:'0:50',mood:2,fase:'Desarrollo',labels:['Palmira','Palmira después','Bogotá 2026'],
+  verbal:'Palmira y el caso cercano del Museo Nacional en Bogotá.',
   vocal:'Voz más grave y lenta. Silencio breve después de «es el objetivo».',
   visual:'Quédate quieto: aquí la seriedad la da la quietud. En el caso de Bogotá, da un paso al frente: es nuestra historia.'},
  {steps:3,time:'0:50',mood:1,fase:'Desarrollo',labels:['Alegoría','Línea 1','Línea 2','Línea 3'],
@@ -808,8 +801,6 @@ const SPEECH=[
   'Desde el patrimonio: se arriesgan bienes irremplazables, y el acto puede eclipsar la causa; terminamos hablando de la sopa y no del clima. Ahora ustedes: ¿quiénes le dan más importancia a la protesta? [cuenta las manos] ¿Y quiénes al patrimonio? [cuenta las manos]'],
  ['Pero hay casos en los que no hay vidrio que proteja. El Templo de Bel, en Palmira, Siria, resistió casi dos mil años de terremotos e imperios.',
   'En 2015, el Estado Islámico lo dinamitó.',
-  'En 1993, durante la guerra de Bosnia, cayó el Puente Viejo de Mostar, que había unido dos orillas durante más de cuatrocientos años.',
-  'Se reconstruyó en 2004, piedra a piedra… pero ¿es el mismo puente?',
   'Y no hay que ir tan lejos. El 15 de octubre de este año, aquí en Bogotá, el Gobierno ordenó retirar 63 piezas del Museo Nacional, entre ellas obras sobre las luchas de las mujeres, la diversidad, las víctimas y el acuerdo de paz. El Ministerio de Cultura dijo que el museo no debía ser un instrumento de adoctrinamiento político; sus críticos lo llamaron censura. Hubo plantones, una tutela y, el 30 de octubre, por orden de un juez, las obras volvieron a las salas. [pausa] No siempre se destruye con dinamita: a veces basta con descolgar.'],
  ['Así como el arte construye con imágenes, nosotros construimos con palabras. Una alegoría es una idea abstracta hecha imagen. Piensen en la dama de la justicia: sostiene una balanza, que es la equidad; tiene los ojos vendados, porque juzga sin mirar a quién; y empuña una espada, que es la fuerza de la ley. Y quizá la alegoría más significativa de la vida sea el amor: algo que no se ve y, sin embargo, lo mueve todo. Escuchen:',
   '«Pueden quemar el lienzo, pero no la mirada que aprendió a ver en él.»',
@@ -916,9 +907,8 @@ function applySteps(i){
   if(i===2) pickAthens(Math.min(n,4));
   if(i===3) pickBosch(Math.min(n,5));
   if(i===5){ slideTo($('cmpSun'), n>=1?8:50, true); setBalance(+(n>=2),+(n>=3)); }
-  if(i===6){ const c=n<=1?0:(n<=3?2:3); setCase(c);
-    if(c===0) slideTo(document.querySelector('.cmp-set[data-c="0"] .compare'), n>=1?6:50, true);
-    if(c===2) slideTo(document.querySelector('.cmp-set[data-c="2"] .compare'), n>=3?6:50, true); }
+  if(i===6){ const c=n<=1?0:3; setCase(c);
+    if(c===0) slideTo(document.querySelector('.cmp-set[data-c="0"] .compare'), n>=1?6:50, true); }
   if(i===7) $('anaHint').style.opacity=n>=3?0:.4;
   if(i===8) dissolve.setState(n);
 }
@@ -1001,7 +991,7 @@ function updateNotes(){
 function toggleNotes(){document.body.classList.toggle('notes-on');}
 $('notesBtn').onclick=toggleNotes;
 function paceInfo(){const el=t0?(Date.now()-t0)/1000:0, plan=SALAS[cur].planEnd, d=el-plan;
-  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 7:00 (máx. 8:00)',col,el};}
+  const col=el>480?'#ff8f73':(d>20?'#f2c14e':'#9fd49a'); return {txt:fmt(el*1000)+' · plan al salir de esta sala '+fmt(plan*1000)+' · total 6:45 (máx. 8:00)',col,el};}
 setInterval(()=>{const p=paceInfo();$('notesTime').textContent=p.txt;$('notesTime').style.color=p.col;$('timerChip').textContent=fmt(p.el*1000);$('timerChip').style.color=p.col;},500);
 setInterval(()=>pushState(),2000);
 
@@ -1032,8 +1022,6 @@ const DEFAULTS={
  'pintura-historica':['El_Tres_de_Mayo,_by_Francisco_de_Goya,_from_Prado_(cropped).jpg','El tres de mayo de 1808, Francisco de Goya (1814), Museo del Prado · Dominio público'],
  'palmira-antes':['Temple_of_Bel,_Palmyra_02.jpg','Templo de Bel, Palmira (2010) · Bernard Gagnon · CC BY-SA'],
  'palmira-despues':['Palmyra_after_freedom_(4).jpg','Palmira, marzo de 2016 · Jawad Shaar (Tasnim News) · ver licencia en Commons'],
- 'mostar-antes':['Le_Vieux_Pont_de_Mostar_(4).jpg','Puente Viejo de Mostar en 1974 · Jpbazard · ver licencia en Commons'],
- 'mostar-despues':['Stari_Most_(Old_Bridge)_Mostar.jpg','Puente Viejo reconstruido (2019) · Djani Behram · ver licencia en Commons']
 };
 function fillSlot(slot,src){
   slot.classList.add('filled');
