@@ -836,14 +836,33 @@ const params=new URLSearchParams(location.search);
 const REMOTE_ID=params.get('remote');
 function loadOne(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>{s.remove();rej(new Error('No se pudo cargar '+src));};document.head.appendChild(s);});}
 async function loadScript(list){let err;for(const src of list){try{await loadOne(src);return;}catch(e){err=e;}}throw err;}
-const PEER_SRC=['js/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];
+const MQTT_SRC=['js/mqtt.min.js','https://unpkg.com/mqtt@5.16.1/dist/mqtt.min.js'];
+/* Relevo por internet (MQTT sobre WebSocket seguro): ambos dispositivos se conectan a un servidor público
+   y se pasan mensajes por un canal privado. No necesita conexión directa entre celular y computador. */
+let BROKERS=['wss://broker.emqx.io:8084/mqtt','wss://broker.hivemq.com:8884/mqtt','wss://test.mosquitto.org:8081'];
+if(params.get('broker')) BROKERS=[params.get('broker')];
+const TOPIC=id=>'museo-arte-fucs/'+id;
+async function connectBroker(order){
+  await loadScript(MQTT_SRC);
+  for(const i of order){
+    try{
+      const c=await new Promise((res,rej)=>{
+        const cl=mqtt.connect(BROKERS[i],{clientId:'m'+Math.random().toString(36).slice(2,10),clean:true,connectTimeout:7000,reconnectPeriod:2000,keepalive:20});
+        const t=setTimeout(()=>{cl.end(true);rej(new Error('timeout'));},8000);
+        cl.once('connect',()=>{clearTimeout(t);res(cl);});
+      });
+      return {client:c,index:i};
+    }catch(e){}
+  }
+  throw new Error('Ningún servidor respondió');
+}
 const QR_SRC=['js/qrcode.js','https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js'];
 
 if(REMOTE_ID){
   document.body.classList.add('remote-mode');
   const $=id=>document.getElementById(id);
   const titles=[...document.querySelectorAll('.sala')].map(x=>x.dataset.title);
-  let conn=null, li=0, ls=0, connected=false;
+  let li=0, ls=0, connected=false, sendGoto=()=>false;
   function render(i,step,time,col){
     const S=SALAS[i];
     $('rSala').textContent=S.fase+' · Sala '+ROMAN[i]+' / X';
@@ -852,7 +871,7 @@ if(REMOTE_ID){
     $('rNotes').innerHTML=notesHTML(S,step,true);
     const ch=$('rChips'); ch.innerHTML='';
     (S.labels||[]).forEach((lab,k)=>{const b=document.createElement('button');b.textContent=lab;if(k===step)b.className='on';
-      b.onclick=()=>{ if(navigator.vibrate)navigator.vibrate(18); if(conn&&conn.open)conn.send({type:'cmd',cmd:'goto',step:k}); else { ls=k; render(li,ls); } }; ch.appendChild(b);});
+      b.onclick=()=>{ if(navigator.vibrate)navigator.vibrate(18); if(!sendGoto(k)){ ls=k; render(li,ls); } }; ch.appendChild(b);});
     const cur=$('rNotes').querySelector('p[data-k="'+Math.min(step,S.speech.length-1)+'"]');
     if(cur) cur.scrollIntoView({block:'center',behavior:'smooth'});
     if(time){$('rTime').textContent=time; if(col)$('rTime').style.color=col;}
@@ -863,25 +882,30 @@ if(REMOTE_ID){
     else { if(ls>0)ls--; else if(li>0){li--;ls=SALAS[li].steps;} }
     render(li,ls);
   }
+  let client=null, T=TOPIC(REMOTE_ID), linked=false;
+  const publish=o=>{ if(client&&client.connected){ client.publish(T+'/cmd',JSON.stringify(o)); return true;} return false; };
   const send=(cmd)=>{ if(navigator.vibrate)navigator.vibrate(18);
-    if(conn&&conn.open){conn.send({type:'cmd',cmd});} else if(cmd==='next'||cmd==='prev'){localMove(cmd==='next'?1:-1);} };
+    if(!(linked&&publish({type:'cmd',cmd}))){ if(cmd==='next'||cmd==='prev') localMove(cmd==='next'?1:-1); } };
+  sendGoto=k=>{ if(linked&&publish({type:'cmd',cmd:'goto',step:k})) return true; return false; };
   $('rNext').onclick=()=>send('next'); $('rPrev').onclick=()=>send('prev');
   $('rMusic').onclick=()=>send('music'); $('rBlack').onclick=()=>send('black');
   render(0,0);
   (async()=>{
     try{
-      if(typeof RTCPeerConnection==='undefined') throw new Error('Este navegador no permite WebRTC');
-      await loadScript(PEER_SRC);
-      const peer=new Peer();
-      peer.on('open',()=>{
-        $('rStatus').textContent='Buscando la presentación…';
-        conn=peer.connect(REMOTE_ID,{reliable:true});
-        conn.on('open',()=>{connected=true;$('rStatus').textContent='Conectado ✓';conn.send({type:'hello'});});
-        conn.on('data',d=>{ if(d&&d.type==='state'){ li=d.i; ls=d.step; render(d.i,d.step,d.time,d.pace&&d.pace.col);} });
-        conn.on('close',()=>{connected=false;$('rStatus').textContent='Conexión cerrada: puedes seguir leyendo el guion aquí. Recarga para reconectar.';});
-      });
-      peer.on('error',e=>{$('rStatus').textContent='Sin conexión ('+(e.type||'error')+'): el guion sigue disponible con los botones.';});
-    }catch(e){ $('rStatus').textContent='Sin conexión: el guion sigue disponible con los botones.'; }
+      $('rStatus').textContent='Conectando con el servidor…';
+      const b=parseInt(params.get('b')||'0',10);
+      const r=await connectBroker([isNaN(b)?0:b]);
+      client=r.client;
+      client.subscribe(T+'/state');
+      client.on('message',(t,m)=>{ let d; try{d=JSON.parse(m.toString());}catch(e){return;}
+        if(d.type==='state'){ linked=true; connected=true; $('rStatus').textContent='Conectado con la presentación ✓'; li=d.i; ls=d.step; render(d.i,d.step,d.time,d.pace&&d.pace.col);} });
+      $('rStatus').textContent='Buscando la presentación…';
+      const hello=()=>{ if(!linked) publish({type:'hello'}); };
+      hello(); const hi=setInterval(()=>{ if(linked) clearInterval(hi); else hello(); },2500);
+      client.on('connect',()=>{ client.subscribe(T+'/state'); publish({type:'hello'}); });
+      client.on('offline',()=>{ $('rStatus').textContent='Sin internet: reintentando… (el guion sigue disponible)'; });
+      setTimeout(()=>{ if(!linked) $('rStatus').textContent='No encuentro la presentación. Verifica que esté abierta en el computador con el código QR visible, y recarga.'; },15000);
+    }catch(e){ $('rStatus').textContent='Sin conexión al servidor: el guion sigue disponible con los botones.'; }
   })();
 }
 
@@ -1293,36 +1317,37 @@ $('mFile').onclick=()=>$('audioFile').click();
 $('audioFile').onchange=e=>{const f=e.target.files[0];if(f){audio.start();audio.useFile(URL.createObjectURL(f));}};
 
 /* =========================================================
-   CONTROL REMOTO DESDE EL CELULAR (PeerJS, funciona en GitHub Pages)
+   CONTROL REMOTO DESDE EL CELULAR (relevo MQTT; funciona en GitHub Pages con cualquier red)
    ========================================================= */
-let peer=null, conns=[];
+let relay=null, relayId=null, lastPush='';
 function stateMsg(){const S=SALAS[cur];return{type:'state',i:cur,title:salas[cur].dataset.title,fase:S.fase,pace:paceInfo(),step:revealed[cur],steps:S.steps,target:S.time,time:elapsed()};}
-function pushState(){conns.forEach(c=>{try{if(c.open)c.send(stateMsg());}catch(e){}});}
+function pushState(){ if(!relay||!relay.client.connected) return; const m=JSON.stringify(stateMsg()); relay.client.publish(TOPIC(relayId)+'/state',m,{retain:true}); }
 function handleCmd(cmd,d){ if(!t0)t0=Date.now(); if(cmd==='goto'){ revealed[cur]=Math.max(0,Math.min(SALAS[cur].steps,d.step|0)); applySteps(cur); updateNotes(); pushState(); return; } if(cmd==='next')next(); else if(cmd==='prev')prev(); else if(cmd==='music')audio.toggle(); else if(cmd==='black')$('black').classList.toggle('on'); }
 async function openRemote(){
   $('remoteModal').classList.add('on');
-  if(peer&&peer.id){showQR(peer.id);return;}
+  if(relay){showQR();return;}
   const msg=$('remoteMsg');
+  msg.textContent='Conectando con el servidor…';
   try{
-    if(typeof RTCPeerConnection==='undefined') throw new Error('rtc');
-    msg.textContent='Creando conexión segura…';
-    await loadScript(PEER_SRC);
-    let id; try{id=sessionStorage.getItem('museo-peer');}catch(e){}
-    if(!id){id='museo-arte-'+Math.random().toString(36).slice(2,8);try{sessionStorage.setItem('museo-peer',id);}catch(e){}}
-    peer=new Peer(id);
-    peer.on('open',pid=>showQR(pid));
-    peer.on('connection',c=>{conns.push(c);
-      c.on('open',()=>{$('remoteStatus').textContent='celular conectado ✓';c.send(stateMsg());setTimeout(()=>$('remoteModal').classList.remove('on'),1400);});
-      c.on('data',d=>{if(d&&d.type==='cmd')handleCmd(d.cmd,d); if(d&&d.type==='hello')c.send(stateMsg());});
-      c.on('close',()=>{conns=conns.filter(x=>x!==c);$('remoteStatus').textContent='celular desconectado';});});
-    peer.on('error',e=>{ if(e.type==='unavailable-id'){try{sessionStorage.removeItem('museo-peer');}catch(_){} }
-      msg.innerHTML='No se pudo abrir la conexión ('+(e.type||'error')+'). Revisa tu internet e inténtalo de nuevo.'; });
+    try{relayId=sessionStorage.getItem('museo-id');}catch(e){}
+    if(!relayId){relayId=Math.random().toString(36).slice(2,10);try{sessionStorage.setItem('museo-id',relayId);}catch(e){}}
+    relay=await connectBroker(BROKERS.map((_,i)=>i));
+    const c=relay.client, T=TOPIC(relayId);
+    c.subscribe(T+'/cmd');
+    c.on('connect',()=>{ c.subscribe(T+'/cmd'); $('remoteStatus').textContent='servidor reconectado'; pushState(); });
+    c.on('offline',()=>{ $('remoteStatus').textContent='sin internet, reintentando…'; });
+    c.on('message',(t,m)=>{ let d; try{d=JSON.parse(m.toString());}catch(e){return;}
+      if(d.type==='hello'){ $('remoteStatus').textContent='celular conectado ✓'; pushState(); setTimeout(()=>$('remoteModal').classList.remove('on'),1400); }
+      if(d.type==='cmd'){ $('remoteStatus').textContent='celular conectado ✓'; handleCmd(d.cmd,d); } });
+    showQR(); pushState();
   }catch(e){
-    msg.innerHTML='Esta vista previa no permite conexiones entre dispositivos.<br><b>El control con el celular funciona al publicar la carpeta en GitHub Pages</b>: abre ahí la presentación, pulsa <b>R</b> y escanea el código QR.<br><br>Alternativa sin internet: un presentador inalámbrico (clicker) funciona directamente.';
+    relay=null;
+    msg.innerHTML='No pude conectarme al servidor del control remoto. Revisa que el computador tenga internet e inténtalo de nuevo con <b>R</b>.<br><br>Si estás viendo la vista previa dentro de Claude, ábrela desde GitHub Pages: ahí sí funciona.<br>Alternativa sin internet: un presentador inalámbrico (clicker).';
   }
 }
-async function showQR(id){
-  const url=location.origin+location.pathname+'?remote='+encodeURIComponent(id);
+async function showQR(){
+  let url=location.origin+location.pathname+'?remote='+encodeURIComponent(relayId)+'&b='+relay.index;
+  if(params.get('broker')) url+='&broker='+encodeURIComponent(params.get('broker'));
   $('remoteMsg').textContent='Escanea este código con la cámara del celular. Allí verás los botones, tus notas y el cronómetro.';
   $('remoteUrl').textContent=url;
   try{ await loadScript(QR_SRC); const q=qrcode(0,'M'); q.addData(url); q.make(); $('qr').innerHTML=q.createSvgTag({cellSize:4,margin:1,scalable:true}); }

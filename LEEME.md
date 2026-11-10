@@ -8,7 +8,7 @@
 ## Controlar con el celular
 1. Abre la presentación en el computador (desde GitHub Pages) y pulsa **R** o el ícono del celular.
 2. Escanea el código QR con el celular. En el teléfono verás los botones, tus notas (verbal, vocal, visual) y el cronómetro.
-3. Los dos dispositivos necesitan internet. Si la red del salón falla, usa el teclado o un presentador inalámbrico (clicker).
+3. Los dos dispositivos necesitan internet, pero pueden estar en redes distintas (por ejemplo, el computador en el wifi y el celular con datos). La conexión pasa por un servidor público (MQTT), así que funciona aunque la red bloquee conexiones directas. Si no hay internet, usa el teclado o un presentador inalámbrico (clicker).
 
 ## Imágenes
 Los espacios ya tienen fotos de Wikimedia Commons (Partenón, Altamira, Keops, Goya y Palmira). Se cargan directo desde Commons cuando la página está en GitHub Pages o se abre con internet. Para ver los créditos y licencias, pulsa la tecla **C** durante la presentación.
